@@ -80,7 +80,17 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 .wavefx{position:absolute;left:50%;bottom:22%;font-size:64px;pointer-events:none;transform-origin:70% 90%;animation:wv .45s ease-in-out 4 alternate}
 @keyframes wv{from{transform:translateX(-50%) rotate(-18deg)}to{transform:translateX(-50%) rotate(22deg)}}
 @media (prefers-reduced-motion:reduce){.wavefx{animation:none;transform:translateX(-50%)}}
-@media (pointer:coarse){.joy{display:block}.wkeys{display:none}.runbtn{display:block}}
+.wchat{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(52px + env(safe-area-inset-bottom,0px));width:min(340px,calc(100vw - var(--mapw) * 2 - 60px));display:flex;flex-direction:column;gap:4px;z-index:5;pointer-events:none}
+.wchat .log{display:flex;flex-direction:column;gap:4px}
+.wchat .log div{background:rgba(0,0,0,.58);color:#fff;font-size:13px;line-height:1.35;padding:5px 10px;border-radius:10px;align-self:flex-start;max-width:100%;word-break:break-word;transition:opacity .8s}
+.wchat .log div b{font-weight:700;margin-right:6px;color:#ffd7b5}
+.wchat .log div.me{background:rgba(224,138,94,.9)}.wchat .log div.me b{color:#fff}
+.wchat .log div.old{opacity:.4}
+.wchat form{display:flex;gap:6px;pointer-events:auto}
+.wchat input{flex:1;min-width:0;font:inherit;font-size:14px;padding:7px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.55);color:#fff}
+.wchat input::placeholder{color:rgba(255,255,255,.6)}
+.wchat button{font:inherit;font-size:13px;padding:7px 12px;border-radius:10px;border:0;background:#e08a5e;color:#fff;cursor:pointer}
+@media (pointer:coarse){.joy{display:block}.wkeys{display:none}.runbtn{display:block}.wchat{left:max(14px,env(safe-area-inset-left,0px));transform:none;width:min(320px,62vw);bottom:calc(178px + env(safe-area-inset-bottom,0px))}}
 .wkeys{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:12px;background:rgba(0,0,0,.55);padding:6px 12px;border-radius:8px;color:#fff;white-space:nowrap}
 .wmap{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:var(--mapw);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#111}
 .wmap img{display:block;width:100%;height:auto;opacity:.9}
@@ -201,6 +211,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
       <div class="trow"><input id="wName" placeholder="내 이름" maxlength="16" aria-label="다른 사람에게 보일 내 이름"><input id="wSayIn" placeholder="말풍선으로 한마디" maxlength="60" aria-label="말풍선 메시지"><button id="wSayBtn" class="fold" type="button">말하기</button></div></div>
     <p class="foot">PC: W A S D 또는 방향키로 걷고, 드래그로 고개를 돌려요. Shift를 누르면 빨리 걸어요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
   </div>
+  <div class="wchat" id="wChat" hidden><div class="log" id="wChatLog" aria-live="polite"></div><form id="wChatForm" autocomplete="off"><input id="wChatIn" placeholder="채팅 입력 후 Enter" maxlength="60" aria-label="채팅 메시지"><button type="submit">보내기</button></form></div>
   <div class="joy" id="wJoy" aria-label="이동 조이스틱"><i></i></div>
   <button class="runbtn wavebtn" id="wWave" type="button" aria-pressed="false" aria-label="손 흔들기" title="손 흔들기">👋</button>
   <div class="wavefx" id="wWaveFx" aria-hidden="true" hidden>👋</div>
@@ -518,11 +529,16 @@ function build(prims,group){const buckets={};
     a.label=textSprite(name||'방문자','rgba(20,23,26,.82)','#ffffff',.2);a.label.position.set(0,2.02,0);a.root.add(a.label);}
   function setBubble(a,say){if(a.net.say===say)return;a.net.say=say;if(a.bubble){a.root.remove(a.bubble);a.bubble.material.map.dispose();a.bubble=null;}
     if(say){a.bubble=textSprite(say,'rgba(255,255,255,.95)','#14171a',.24);a.bubble.position.set(0,2.36,0);a.root.add(a.bubble);}}
+  function chatLog(name,txt,isMe){const log=document.getElementById('wChatLog');if(!log||!txt)return;const d=document.createElement('div');if(isMe)d.className='me';
+    const b=document.createElement('b');b.textContent=name;d.appendChild(b);d.appendChild(document.createTextNode(txt));log.appendChild(d);
+    while(log.children.length>6)log.removeChild(log.firstChild);setTimeout(()=>d.classList.add('old'),30000);}
   function syncPeers(list){const seen=new Set();for(const p of list){if(p.sameTab||p.kind!=='viewer')continue;const pr=p.presence||{};if(typeof pr.x!=='number')continue;
       seen.add(p.peer);let a=NET.peers.get(p.peer);if(!a){a=avatarFor(p,pr);NET.peers.set(p.peer,a);}
       a.net.tx=+pr.x;a.net.tz=+pr.z;a.net.tyaw=+pr.yaw||0;a.root.visible=pr.m===mode;
       const w=+pr.w||0;if(a.net.w===undefined)a.net.w=w;else if(w&&w!==a.net.w){a.net.w=w;a.net.wLocal=Date.now();}
-      setLabel(a,clean(pr.n,16)+(p.isMe?' (나)':'')+(p.guest?' · 게스트':''));a.net.sayTxt=pr.st&&Date.now()-pr.st<9000?clean(pr.s,60):'';setBubble(a,a.net.sayTxt||(a.net.wLocal&&Date.now()-a.net.wLocal<2600?'👋':''));}
+      setLabel(a,clean(pr.n,16)+(p.isMe?' (나)':'')+(p.guest?' · 게스트':''));
+      if(!p.isMe){const st=+pr.st||0;if(st!==a.net.lastSt){const first=a.net.lastSt===undefined;a.net.lastSt=st;if(st&&pr.s&&(!first||Date.now()-st<9000))chatLog(clean(pr.n,16)||'방문자',clean(pr.s,60),false);}}
+      a.net.sayTxt=pr.st&&Date.now()-pr.st<9000?clean(pr.s,60):'';setBubble(a,a.net.sayTxt||(a.net.wLocal&&Date.now()-a.net.wLocal<2600?'👋':''));}
     for(const [k,a] of NET.peers){if(!seen.has(k)){scene.remove(a.root);NET.peers.delete(k);}}
     const n=list.filter(p=>p.kind==='viewer').length;const el=document.getElementById('wNet');if(el)el.textContent=n>1?('지금 '+n+'명이 함께 걷는 중'):'지금은 혼자예요. 링크를 공유하면 같이 걸을 수 있어요.';}
   function animateAvatars(dt){for(const a of NET.peers.values()){const r=a.root,n=a.net;const dx=n.tx-r.position.x,dz=n.tz-r.position.z,d=Math.hypot(dx,dz);
@@ -538,8 +554,10 @@ function build(prims,group){const buckets={};
     try{room=await window.claude.use('room');}catch(e){room=null;}
     if(!room)return;NET.room=room;box.hidden=false;const nm=document.getElementById('wName');nm.value=myName;
     nm.addEventListener('change',()=>{myName=clean(nm.value.trim(),16);nm.value=myName;try{localStorage.setItem('gp4f-name',myName);}catch(e){}sendPresence(true);});
-    const say=document.getElementById('wSayIn'),go=()=>{const v=clean(say.value.trim(),60);if(!v)return;NET.say=v;NET.sayT=Date.now();say.value='';sendPresence(true);};
-    document.getElementById('wSayBtn').addEventListener('click',go);say.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')go();});
+    const say=document.getElementById('wSayIn'),go=()=>{const v=clean(say.value.trim(),60);if(!v)return;NET.say=v;NET.sayT=Date.now();say.value='';chatLog('나',v,true);sendPresence(true);};
+    document.getElementById('wSayBtn').addEventListener('click',go);
+    const cin=document.getElementById('wChatIn');document.getElementById('wChat').hidden=false;cin.addEventListener('keydown',e=>e.stopPropagation());
+    document.getElementById('wChatForm').addEventListener('submit',e=>{e.preventDefault();say.value=cin.value;cin.value='';go();cin.blur();});say.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')go();});
     nm.addEventListener('keydown',e=>e.stopPropagation());
     room.onPeers(ch=>syncPeers(ch.peers),()=>{box.hidden=true;});sendPresence(true);
     setInterval(()=>{if(NET.say&&Date.now()-NET.sayT>9000){NET.say='';sendPresence(true);}const ps=room.peers();if(ps.length)syncPeers(ps);},3000);}
