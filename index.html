@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script><script src="room-shim.js"></script></head><body><title>지오플레이스 4F 실사 투어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-cache"><script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script><script src="room-shim.js"></script></head><body><title>지오플레이스 4F 실사 투어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -695,10 +695,10 @@ function setTab(name){curTab=name;const cmpOn=name==='compare',walkOn=name==='wa
 document.getElementById('tab-tour').addEventListener('click',()=>setTab('tour'));
 document.getElementById('tab-compare').addEventListener('click',()=>setTab('compare'));
 document.getElementById('tab-walk').addEventListener('click',()=>setTab('walk'));
-document.querySelectorAll('.fold').forEach(btn=>{const card=document.getElementById(btn.getAttribute('aria-controls'));const set=f=>{card.classList.toggle('folded',f);btn.textContent=f?'펼치기':'접기';btn.setAttribute('aria-expanded',String(!f));};btn.addEventListener('click',()=>set(!card.classList.contains('folded')));if(matchMedia('(max-width:640px)').matches)set(true);});
+document.querySelectorAll('.fold[aria-controls]').forEach(btn=>{const card=document.getElementById(btn.getAttribute('aria-controls'));if(!card)return;const set=f=>{card.classList.toggle('folded',f);btn.textContent=f?'펼치기':'접기';btn.setAttribute('aria-expanded',String(!f));};btn.addEventListener('click',()=>set(!card.classList.contains('folded')));if(matchMedia('(max-width:640px)').matches)set(true);});
 document.getElementById('goPano').addEventListener('click',()=>{setTab('tour');show(curShot,state.mode,false);});
 const fromHash=()=>({'#compare':'compare','#tour':'tour'})[location.hash]||'walk';addEventListener('hashchange',()=>{if(fromHash()!==curTab)setTab(fromHash());});
-if(fromHash()!=='tour')setTab(fromHash());
+setTab('walk');
 })();
 </script>
 </body></html>
