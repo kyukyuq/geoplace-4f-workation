@@ -44,6 +44,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 .cone{position:absolute;width:0;height:0;pointer-events:none}
 .cone::before{content:"";position:absolute;left:-26px;top:-46px;width:52px;height:46px;background:linear-gradient(to top,rgba(224,138,94,.75),rgba(224,138,94,0));clip-path:polygon(50% 100%,0 0,100% 0)}
 .hint{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:12px;background:rgba(0,0,0,.55);padding:6px 12px;border-radius:8px;color:#fff;white-space:nowrap}
+[hidden]{display:none!important}
 .loading{position:fixed;inset:0;display:grid;place-items:center;font-weight:600;color:var(--muted);pointer-events:none}
 @media (max-width:640px){.map{width:46vw}.hint{display:none}.card{padding:12px}}
 /* Compare view: a scrolling light/dark document layered over the panorama */
@@ -74,6 +75,11 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 .runbtn{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px) + var(--mapw) * 2 / 3);width:38px;height:38px;border-radius:50%;padding:0;
   border:1px solid rgba(255,255,255,.3);background:rgba(20,23,26,.7);color:#fff;font:700 10.5px/1 var(--font-body);display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 .runbtn[aria-pressed="true"]{background:#e08a5e;border-color:#e08a5e}
+.wavebtn{display:block;bottom:calc(22px + env(safe-area-inset-bottom,0px) + var(--mapw) * 2 / 3 + 46px);width:30px;height:30px;font-size:15px;line-height:1}
+@media (pointer:fine){.wavebtn{bottom:calc(22px + env(safe-area-inset-bottom,0px) + var(--mapw) * 2 / 3)}}
+.wavefx{position:absolute;left:50%;bottom:22%;font-size:64px;pointer-events:none;transform-origin:70% 90%;animation:wv .45s ease-in-out 4 alternate}
+@keyframes wv{from{transform:translateX(-50%) rotate(-18deg)}to{transform:translateX(-50%) rotate(22deg)}}
+@media (prefers-reduced-motion:reduce){.wavefx{animation:none;transform:translateX(-50%)}}
 @media (pointer:coarse){.joy{display:block}.wkeys{display:none}.runbtn{display:block}}
 .wkeys{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:12px;background:rgba(0,0,0,.55);padding:6px 12px;border-radius:8px;color:#fff;white-space:nowrap}
 .wmap{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:var(--mapw);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#111}
@@ -196,6 +202,8 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
     <p class="foot">PC: W A S D 또는 방향키로 걷고, 드래그로 고개를 돌려요. Shift를 누르면 빨리 걸어요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
   </div>
   <div class="joy" id="wJoy" aria-label="이동 조이스틱"><i></i></div>
+  <button class="runbtn wavebtn" id="wWave" type="button" aria-pressed="false" aria-label="손 흔들기" title="손 흔들기">👋</button>
+  <div class="wavefx" id="wWaveFx" aria-hidden="true" hidden>👋</div>
   <button class="runbtn" id="wRun" type="button" aria-pressed="false" aria-label="누르고 있는 동안 빨리 걷기">달리기</button>
   <div class="wkeys">W A S D 걷기 · 드래그 둘러보기 · Shift 달리기</div>
   <div class="wmap"><img id="wMapImg" src="renders_big/plan_tobe.jpg" alt="현재 위치 평면도"><b id="wDot"></b></div>
@@ -452,7 +460,14 @@ function build(prims,group){const buckets={};
       for(const s of[-1,1]){const sg=new THREE.Group();sg.position.set(.24*s,.52,0);up.add(sg);const ua=limb(.052,.22,shirt);sg.add(ua);
         const el=new THREE.Group();el.position.y=-.32;ua.add(el);el.add(limb(.044,.2,skin,'skin'));sg.rotation.z=-.06*s;o.arms.push({sg,el,s,a:0,e:.15});
         if(s>0&&p.pose==='beer'){sg.rotation.x=.3;el.rotation.x=1.4;el.add(at(M(new THREE.CylinderGeometry(.04,.035,.16,10),'#d9902e','beer'),0,-.3,-.04));o.arms[o.arms.length-1].hold=1;}
+        if(p.pose==='cook'||p.pose==='barista'){sg.rotation.x=.55;el.rotation.x=1.0;o.arms[o.arms.length-1].hold=1;o.arms[o.arms.length-1].a=.55;o.arms[o.arms.length-1].e=1.0;
+          if(s>0&&p.tool==='ladle'){el.add(at(M(new THREE.CylinderGeometry(.008,.008,.42,6),'#c9ccce','steel'),0,-.28,-.12));}
+          if(s>0&&p.tool==='pour'){el.add(at(M(new THREE.CylinderGeometry(.04,.035,.15,10),'#d9902e','beer'),0,-.3,-.04));}}
         if(s>0&&p.pose==='phone'){sg.rotation.x=.4;el.rotation.x=1.7;el.add(at(M(new THREE.BoxGeometry(.07,.14,.01),'#15181b','screen'),0,-.27,-.03));o.arms[o.arms.length-1].hold=1;}}
+      if(p.pose==='cook'){const hat=new THREE.Group();hat.position.y=.12;o.head.add(hat);hat.add(at(M(new THREE.CylinderGeometry(.1,.1,.14,16),'#ffffff','fabric'),0,.05,0));
+        const puff=at(M(new THREE.SphereGeometry(.14,16,10),'#ffffff','fabric'),0,.15,0);puff.scale.y=.55;hat.add(puff);
+        const ap=at(M(new THREE.BoxGeometry(.34,.5,.02),'#ffffff','fabric'),0,.62,-.13);root.add(ap);}
+      if(p.pose==='barista'){root.add(at(M(new THREE.BoxGeometry(.34,.66,.02),'#3a2a20','fabric'),0,.62,-.13));}
       if(p.k==='walk'){o.path=p.path;o.v=p.v||1.1;o.dist=Math.random()*20;o.loop=p.path.length>2;
         const segs=[];let L0=0;const pts=o.loop?p.path.concat([p.path[0]]):p.path;for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];const l=Math.hypot(b[0]-a[0],b[1]-a[1]);segs.push([a,b,L0,l]);L0+=l;}o.segs=segs;o.len=L0;}}
     (parent||groups.tobe).add(root);if(track!==false)PEEPS.push(o);return o;}
@@ -461,6 +476,10 @@ function build(prims,group){const buckets={};
       if(p.pose==='laptop')o.arms.forEach(a=>{a.el.rotation.x=a.e+Math.sin(t*14+a.s*1.7+ph)*.05;});
       else if(p.pose==='eat'){const r=o.arms[1],u=Math.max(0,Math.sin(t*.8+ph));r.sg.rotation.x=r.a+u*.7;r.el.rotation.x=r.e+u*.6;}
       else{const r=o.arms[1],u=Math.max(0,Math.sin(t*1.1+ph));r.sg.rotation.x=r.a+u*.35;r.el.rotation.x=r.e+u*.4;}}
+    else if(p.k==='stand'&&(p.pose==='cook'||p.pose==='barista')){const [l,r]=o.arms;o.up.rotation.x=.1+Math.sin(t*.9+ph)*.03;o.head.rotation.x=.25;o.head.rotation.y=Math.sin(t*.4+ph)*.3;
+      if(p.tool==='ladle'){r.sg.rotation.x=.55+Math.sin(t*3+ph)*.18;r.sg.rotation.z=Math.cos(t*3+ph)*.18;l.sg.rotation.x=.45;}
+      else if(p.tool==='pour'){const u=(Math.sin(t*.7+ph)+1)/2;r.sg.rotation.x=.4+u*.5;r.el.rotation.x=.8+u*.6;l.sg.rotation.x=.5;}
+      else{const u=Math.max(0,Math.sin(t*1.6+ph));l.sg.rotation.x=.55+u*.45;r.sg.rotation.x=.55+Math.max(0,Math.sin(t*1.6+ph+2))*.45;l.el.rotation.x=1+Math.sin(t*5+ph)*.15;}}
     else if(p.k==='stand'){o.up.rotation.z=Math.sin(t*.7+ph)*.025;o.root.position.y=0;o.head.rotation.y=Math.sin(t*.45+ph)*.45;
       o.arms.forEach(a=>{if(!a.hold)a.sg.rotation.x=Math.sin(t*1.2+ph+a.s)*.12;});}
     else{o.dist+=o.v*dt;let d=o.dist%(o.loop?o.len:2*o.len),dir=1;if(!o.loop&&d>o.len){d=2*o.len-d;dir=-1;}
@@ -476,7 +495,7 @@ function build(prims,group){const buckets={};
     const grp=new THREE.Group();for(const q of pts){const s=new THREE.Sprite(mt);s.position.set(q[0],q[1],q[2]);s.scale.set(size,size,1);grp.add(s);}grp.visible=false;scene.add(grp);glows[m]=grp;}
 
   // ---------- together: other viewers as avatars (room presence) ----------
-  const NET={room:null,peers:new Map(),last:0,lastSent:'',sayT:0,say:''};
+  const NET={room:null,peers:new Map(),last:0,lastSent:'',sayT:0,say:'',waveT:0};
   const COLORS=['#d9774a','#2f8f86','#c08a24','#5d7a99','#b8603f','#6f8f62','#8a3b3b','#7a6fb0'];
   let myName='',myCol='';
   try{myName=localStorage.getItem('gp4f-name')||'';myCol=localStorage.getItem('gp4f-col')||'';}catch(e){}
@@ -498,15 +517,18 @@ function build(prims,group){const buckets={};
   function syncPeers(list){const seen=new Set();for(const p of list){if(p.sameTab||p.kind!=='viewer')continue;const pr=p.presence||{};if(typeof pr.x!=='number')continue;
       seen.add(p.peer);let a=NET.peers.get(p.peer);if(!a){a=avatarFor(p,pr);NET.peers.set(p.peer,a);}
       a.net.tx=+pr.x;a.net.tz=+pr.z;a.net.tyaw=+pr.yaw||0;a.root.visible=pr.m===mode;
-      setLabel(a,clean(pr.n,16)+(p.isMe?' (나)':'')+(p.guest?' · 게스트':''));setBubble(a,pr.st&&Date.now()-pr.st<9000?clean(pr.s,60):'');}
+      const w=+pr.w||0;if(a.net.w===undefined)a.net.w=w;else if(w&&w!==a.net.w){a.net.w=w;a.net.wLocal=Date.now();}
+      setLabel(a,clean(pr.n,16)+(p.isMe?' (나)':'')+(p.guest?' · 게스트':''));a.net.sayTxt=pr.st&&Date.now()-pr.st<9000?clean(pr.s,60):'';setBubble(a,a.net.sayTxt||(a.net.wLocal&&Date.now()-a.net.wLocal<2600?'👋':''));}
     for(const [k,a] of NET.peers){if(!seen.has(k)){scene.remove(a.root);NET.peers.delete(k);}}
     const n=list.filter(p=>p.kind==='viewer').length;const el=document.getElementById('wNet');if(el)el.textContent=n>1?('지금 '+n+'명이 함께 걷는 중'):'지금은 혼자예요. 링크를 공유하면 같이 걸을 수 있어요.';}
   function animateAvatars(dt){for(const a of NET.peers.values()){const r=a.root,n=a.net;const dx=n.tx-r.position.x,dz=n.tz-r.position.z,d=Math.hypot(dx,dz);
       const k=Math.min(1,dt*8);r.position.x+=dx*k;r.position.z+=dz*k;let dr=n.tyaw-r.rotation.y;dr=Math.atan2(Math.sin(dr),Math.cos(dr));r.rotation.y+=dr*k;
-      const moving=d>.02;n.dist+=moving?Math.min(d,.2):0;const sw=moving?Math.sin(n.dist*9):0;a.legs[0].rotation.x=sw*.5;a.legs[1].rotation.x=-sw*.5;a.arms.forEach(m=>{m.sg.rotation.x=-sw*.35*m.s;});
+      const moving=d>.02;n.dist+=moving?Math.min(d,.2):0;const sw=moving?Math.sin(n.dist*9):0;a.legs[0].rotation.x=sw*.5;a.legs[1].rotation.x=-sw*.5;a.arms.forEach(m=>{m.sg.rotation.x=-sw*.35*m.s;m.sg.rotation.z=-.06*m.s;m.el.rotation.x=.15;});
+      const waving=n.wLocal&&Date.now()-n.wLocal<2600;if(waving){const r=a.arms[1],tt=performance.now()/1000;r.sg.rotation.x=2.75;r.sg.rotation.z=-.25+Math.sin(tt*13)*.35;r.el.rotation.x=.35;}
+      setBubble(a,n.sayTxt||(waving?'👋':''));
       if(a.bubble&&a.bubbleT&&Date.now()>a.bubbleT){}}}
   function sendPresence(force){if(!NET.room)return;const now=performance.now();if(!force&&now-NET.last<90)return;
-    const pr={x:+me.x.toFixed(2),z:+me.z.toFixed(2),yaw:+me.yaw.toFixed(2),m:mode,n:myName||'방문자',c:myCol,s:NET.say,st:NET.sayT};const key=JSON.stringify(pr);
+    const pr={x:+me.x.toFixed(2),z:+me.z.toFixed(2),yaw:+me.yaw.toFixed(2),m:mode,n:myName||'방문자',c:myCol,s:NET.say,st:NET.sayT,w:NET.waveT};const key=JSON.stringify(pr);
     if(key===NET.lastSent)return;NET.last=now;NET.lastSent=key;NET.room.presence(pr).catch(()=>{});}
   async function joinRoom(){const box=document.getElementById('wTogether');if(!window.claude||!window.claude.use)return;let room=null;
     try{room=await window.claude.use('room');}catch(e){room=null;}
@@ -547,7 +569,11 @@ function build(prims,group){const buckets={};
     const mi=document.getElementById('wMapImg');if(mi)mi.src='renders_big/plan_'+m+'.jpg';}
   function updatePool(){const ls=lampsBy[mode]||[];const near=ls.map(l=>[l,(l[0]-me.x)**2+(l[2]-me.z)**2]).sort((a,b)=>a[1]-b[1]).slice(0,pool.length);
     pool.forEach((l,i)=>{const n=near[i];if(!n){l.intensity=0;return;}l.position.set(n[0][0],n[0][1]-.3,n[0][2]);l.intensity=mode==='asis'?1.1:1.05;l.distance=mode==='asis'?9:10;});}
+  let waveTimer=0;function wave(){NET.waveT=Date.now();sendPresence(true);const b=document.getElementById('wWave'),fx=document.getElementById('wWaveFx');
+    b.setAttribute('aria-pressed','true');fx.hidden=false;fx.style.animation='none';void fx.offsetWidth;fx.style.animation='';clearTimeout(waveTimer);
+    waveTimer=setTimeout(()=>{fx.hidden=true;b.setAttribute('aria-pressed','false');},1900);}
   function bindInput(){const cv=document.getElementById('w');let drag=null;
+    document.getElementById('wWave').addEventListener('click',wave);addEventListener('keydown',e=>{if(running&&e.code==='KeyH'&&!e.repeat&&!/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||''))wave();});
     cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};});
     cv.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const k=.0042;me.yaw+=(e.clientX-drag.x)*k;me.pitch=Math.max(-1.2,Math.min(1.2,me.pitch+(e.clientY-drag.y)*k));drag.x=e.clientX;drag.y=e.clientY;});
     const end=e=>{if(drag&&drag.id===e.pointerId)drag=null;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
