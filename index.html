@@ -135,6 +135,8 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 .autobtn:focus-visible{outline:2px solid #7db6d8;outline-offset:2px}
 .autocap{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:9;pointer-events:none;max-width:min(560px,88vw);text-align:center;background:rgba(20,23,26,.78);color:#fff;border-radius:12px;padding:10px 16px;font:500 14px/1.45 var(--font-body);transition:opacity .4s}
 .autocap b{display:block;font-size:16px;color:#ffd7b5;margin-bottom:2px}
+.lockhint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;pointer-events:none;background:rgba(20,23,26,.72);color:#fff;font:600 14px/1 var(--font-body);padding:12px 18px;border-radius:999px}
+@media (pointer:coarse){.mlook,.lockhint{display:none!important}}
 .wfade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .45s;z-index:4}.wfade.on{opacity:1}
 @media (max-width:640px){.autobtn{top:calc(58px + env(safe-area-inset-top,0px))}.autocap{top:calc(104px + env(safe-area-inset-top,0px));font-size:13px}}
 @media (max-width:640px){.card{top:calc(64px + env(safe-area-inset-top,0px))}.tabs button{padding:9px 11px;font-size:12.5px}.wview{--mapw:38vw}}
@@ -218,18 +220,19 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
     <div class="seg" id="wModeSeg"><button data-v="asis" aria-pressed="false">현재 식당가</button><button data-v="tobe" aria-pressed="true">워케이션</button></div>
     <div class="lbl">순간 이동</div>
     <div class="seg grid" id="wPtSeg"></div>
-    <div class="lbl">시점</div>
-    <div class="seg" id="wLookSeg"><button data-v="auto" aria-pressed="true">자동 시점</button><button data-v="manual" aria-pressed="false">직접 돌리기</button></div>
+    <div class="lbl mlook">시점</div>
+    <div class="seg mlook" id="wLookSeg"><button data-v="auto" aria-pressed="true">마우스 시점</button><button data-v="manual" aria-pressed="false">드래그로 돌리기</button></div>
     <div id="wTogether" hidden><div class="lbl">함께 걷기</div><p class="foot" id="wNet" style="margin:6px 0 8px">연결하는 중…</p>
       <div class="trow"><input id="wName" placeholder="내 이름" maxlength="16" aria-label="다른 사람에게 보일 내 이름"><input id="wSayIn" placeholder="말풍선으로 한마디" maxlength="60" aria-label="말풍선 메시지"><button id="wSayBtn" class="fold" type="button">말하기</button></div></div>
-    <p class="foot">자동 시점을 켜 두면 옆이나 대각선으로 걸을 때 고개가 걷는 방향으로 자연스럽게 돌아가요.<br>PC: W A S D 또는 방향키로 걷고, 드래그로 고개를 돌려요. Shift를 누르면 빨리 걷고, Space로 점프해요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
+    <p class="foot">PC: 화면을 한 번 클릭하면 마우스만 움직여도 고개가 돌아가요. ESC를 누르면 마우스가 풀려요. W A S D 또는 방향키로 걸어요. Shift를 누르면 빨리 걷고, Space로 점프해요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
   </div>
   <div class="wchat" id="wChat" hidden><div class="log" id="wChatLog" aria-live="polite"></div><form id="wChatForm" autocomplete="off"><input id="wChatIn" placeholder="채팅 입력 후 Enter" maxlength="60" aria-label="채팅 메시지"><button type="submit">보내기</button></form></div>
   <div class="joy" id="wJoy" aria-label="이동 조이스틱"><i></i></div>
   <button class="runbtn wavebtn" id="wWave" type="button" aria-pressed="false" aria-label="손 흔들기" title="손 흔들기">👋</button>
   <div class="wavefx" id="wWaveFx" aria-hidden="true" hidden>👋</div>
   <button class="runbtn" id="wRun" type="button" aria-pressed="false" aria-label="누르고 있는 동안 빨리 걷기">달리기</button>
-  <div class="wkeys">W A S D 걷기 · 드래그 둘러보기 · Shift 달리기 · Space 점프</div>
+  <div class="wkeys" id="wKeys">W A S D 걷기 · 마우스로 둘러보기 · Shift 달리기 · Space 점프 · ESC 마우스 해제</div>
+  <div class="lockhint" id="wLockHint" hidden>화면을 클릭하면 마우스로 둘러볼 수 있어요</div>
   <div class="wmap"><img id="wMapImg" src="renders_cy/plan_tobe.jpg" alt="현재 위치 평면도"><b id="wDot"></b></div>
 </div>
 <div class="cview" id="compareView" role="tabpanel" aria-labelledby="tab-compare" hidden>
@@ -616,9 +619,15 @@ function build(prims,group){const buckets={};
     waveTimer=setTimeout(()=>{fx.hidden=true;b.setAttribute('aria-pressed','false');},1900);}
   function bindInput(){const cv=document.getElementById('w');let drag=null;
     document.getElementById('wWave').addEventListener('click',wave);addEventListener('keydown',e=>{if(running&&e.code==='KeyH'&&!e.repeat&&!/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||''))wave();});
-    cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};if(AU.on)setAuto(false);});
+    cv.addEventListener('pointerdown',e=>{if(AU.on)setAuto(false);
+      if(e.pointerType==='mouse'&&mouseLook&&fine&&!lockFailed){if(!locked()){try{const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{});}catch(_){}}return;}
+      cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};});
+    document.addEventListener('mousemove',e=>{if(!running)return;let k=.0022;
+      if(!locked()){if(!(lockFailed&&mouseLook&&fine&&e.target===cv&&!e.buttons))return;k=.004;}   // fallback: hover-look when the browser refuses pointer lock
+      me.yaw-=e.movementX*k;me.pitch=Math.max(-1.2,Math.min(1.2,me.pitch-e.movementY*k));});
+    document.addEventListener('pointerlockchange',lockHint);document.addEventListener('pointerlockerror',()=>{lockFailed=true;lockHint();});
     autoBtn().addEventListener('click',()=>setAuto(!AU.on));
-    document.querySelectorAll('#wLookSeg button').forEach(b=>b.addEventListener('click',()=>setLook(b.dataset.v==='auto')));setLook(autoLook);
+    document.querySelectorAll('#wLookSeg button').forEach(b=>b.addEventListener('click',()=>setLook(b.dataset.v==="auto")));setLook(mouseLook);
     cv.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const k=.0042;me.yaw+=(e.clientX-drag.x)*k;me.pitch=Math.max(-1.2,Math.min(1.2,me.pitch+(e.clientY-drag.y)*k));drag.x=e.clientX;drag.y=e.clientY;});
     const end=e=>{if(drag&&drag.id===e.pointerId)drag=null;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
     addEventListener('keydown',e=>{if(!running)return;if(/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||''))return;keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault();
@@ -633,8 +642,12 @@ function build(prims,group){const buckets={};
   function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
   let jumpY=0,jumpV=0;
   // 자동 시점: when walking sideways/diagonally the view eases toward the walking direction; pitch drifts back to level
-  let autoLook=true;try{autoLook=localStorage.getItem('gp4f-look')!=='manual';}catch(e){}
-  function setLook(v){autoLook=v;document.querySelectorAll('#wLookSeg button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.v==='auto')===v)));try{localStorage.setItem('gp4f-look',v?'auto':'manual');}catch(e){}}
+  let autoLook=false;let mouseLook=true;let lockFailed=false;try{mouseLook=localStorage.getItem('gp4f-mlook')!=='manual';}catch(e){}
+  const fine=matchMedia('(pointer:fine)').matches;
+  const locked=()=>document.pointerLockElement===renderer?.domElement;
+  function lockHint(){const h=document.getElementById('wLockHint');if(h)h.hidden=!(running&&fine&&mouseLook&&!lockFailed&&!locked()&&document.getElementById('wJoin').hidden);}
+  function setLook(v){mouseLook=v;document.querySelectorAll('#wLookSeg button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.v==='auto')===v)));
+    try{localStorage.setItem('gp4f-mlook',v?'auto':'manual');}catch(e){}if(!v&&locked())document.exitPointerLock();lockHint();}
   function lookTick(f,s,dt){if(!autoLook)return;const len=Math.hypot(f,s);if(len<.15)return;
     if(f<-.2&&Math.abs(s)<.35)return;                                   // walking straight back: don't spin around
     let a=Math.atan2(-s,Math.max(f,0));                                   // + = turn left, - = turn right
@@ -666,17 +679,17 @@ function build(prims,group){const buckets={};
     else if(AU.phase==='in'){me.yaw=AU.base-.5;if(AU.t>=.45){AU.phase='look';AU.t=0;}}}
   function step(now){if(!running)return;requestAnimationFrame(step);const dt=Math.min(.05,(now-(last||now))/1000);last=now;if(!L)return;
     let f=0,s=0;if(keys.KeyW||keys.ArrowUp)f+=1;if(keys.KeyS||keys.ArrowDown)f-=1;if(keys.KeyA||keys.ArrowLeft)s-=1;if(keys.KeyD||keys.ArrowRight)s+=1;if(keys.KeyQ)me.yaw+=1.6*dt;if(keys.KeyE)me.yaw-=1.6*dt;
-    f-=joy.y;s+=joy.x;if(AU.on&&(f||s||keys.KeyQ||keys.KeyE))setAuto(false);autoTick(dt);if(!AU.on)lookTick(f,s,dt);const len=Math.hypot(f,s);if(len>1){f/=len;s/=len;}
+    f-=joy.y;s+=joy.x;if(AU.on&&(f||s||keys.KeyQ||keys.KeyE))setAuto(false);autoTick(dt);const len=Math.hypot(f,s);if(len>1){f/=len;s/=len;}
     const sp=(keys.ShiftLeft||keys.ShiftRight||runHeld?4.2:2.1)*dt;const fx=-Math.sin(me.yaw),fz=-Math.cos(me.yaw),rx=Math.cos(me.yaw),rz=-Math.sin(me.yaw);
     const dx=(fx*f+rx*s)*sp,dz=(fz*f+rz*s)*sp;if(free(me.x+dx,me.z))me.x+=dx;if(free(me.x,me.z+dz))me.z+=dz;
     if(jumpV!==0||jumpY>0){jumpV-=13*dt;jumpY+=jumpV*dt;if(jumpY<=0){jumpY=0;jumpV=0;}}
     const bob=len>.05&&jumpY===0?Math.sin(now*.011)*.025:0;camera.position.set(me.x,EYE+bob+jumpY,me.z);camera.rotation.set(me.pitch,me.yaw,0);
     if(mode==='tobe')animatePeople(now/1000,dt);
     animateAvatars(dt);sendPresence(false);
-    poolT-=dt;if(poolT<=0){updatePool();poolT=.4;}
+    poolT-=dt;if(poolT<=0){updatePool();poolT=.4;lockHint();}
     renderer.render(scene,camera);
     const dot=document.getElementById('wDot');if(dot){dot.style.left=((me.x+52)/104*100)+'%';dot.style.top=((me.z+34.667)/69.333*100)+'%';dot.style.transform='translate(-50%,-50%) rotate('+(-me.yaw)+'rad)';}}
-  return{setName:(n)=>{myName=clean(n,16);try{localStorage.setItem('gp4f-name',myName);}catch(e){}const nm=document.getElementById('wName');if(nm)nm.value=myName;sendPresence(true);},getName:()=>myName,start:async(m)=>{if(m)mode=m;await init();running=true;last=0;if(groups.asis)setMode(mode);requestAnimationFrame(step);},stop:()=>{running=false;for(const k in keys)keys[k]=false;if(AU.on)setAuto(false);}};
+  return{setName:(n)=>{myName=clean(n,16);try{localStorage.setItem('gp4f-name',myName);}catch(e){}const nm=document.getElementById('wName');if(nm)nm.value=myName;sendPresence(true);},getName:()=>myName,start:async(m)=>{if(m)mode=m;await init();running=true;last=0;if(groups.asis)setMode(mode);requestAnimationFrame(step);},stop:()=>{running=false;for(const k in keys)keys[k]=false;if(AU.on)setAuto(false);if(locked())document.exitPointerLock();lockHint();}};
 })();
 
 
