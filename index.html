@@ -186,7 +186,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 <div class="fade" id="fade"></div>
 <div class="loading" id="loading">파노라마 불러오는 중…</div>
 <div class="hots" id="hots"></div>
-<button class="autobtn" id="tAuto" type="button" aria-pressed="false">▶ 자동 둘러보기</button>
+<button class="autobtn" id="tAuto" type="button" aria-pressed="false" hidden>▶ 자동 둘러보기</button>
 <div class="card" id="tourCard">
   <div class="head"><div><div class="eyebrow">부산 서면 · 지오플레이스 4층 · 블렌더 360°</div><h1>지오플레이스 4F 360° 투어</h1></div><button class="fold" type="button" aria-expanded="true" aria-controls="tourCard">접기</button></div>
   <div class="seg" id="modeSeg"><button id="m-asis" data-v="asis" aria-pressed="false">현재 식당가</button><button id="m-tobe" data-v="tobe" aria-pressed="true">워케이션</button></div>
@@ -200,7 +200,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 <div class="wview" id="walkView" role="tabpanel" aria-labelledby="tab-walk" hidden>
   <canvas id="w" aria-label="1인칭으로 걸어 다니는 4층 3D 공간"></canvas>
   <div class="wfade" id="wFade"></div>
-  <button class="autobtn" id="wAuto" type="button" aria-pressed="false">▶ 자동 투어</button>
+  <button class="autobtn" id="wAuto" type="button" aria-pressed="false" hidden>▶ 자동 투어</button>
   <div class="autocap" id="wAutoCap" hidden></div>
   <div class="wstatus" id="wStatus" hidden>3D 공간을 짓는 중…</div>
   <form class="wjoin" id="wJoin" autocomplete="off">
@@ -638,7 +638,7 @@ function build(prims,group){const buckets={};
   function lookTick(f,s,dt){if(!autoLook)return;const len=Math.hypot(f,s);if(len<.15)return;
     if(f<-.2&&Math.abs(s)<.35)return;                                   // walking straight back: don't spin around
     let a=Math.atan2(-s,Math.max(f,0));                                   // + = turn left, - = turn right
-    a=Math.max(-1,Math.min(1,a));me.yaw+=a*1.5*dt*Math.min(1,len);
+    a=Math.max(-1.2,Math.min(1.2,a));me.yaw+=a*2.0*dt*Math.min(1,len);
     me.pitch+=(-.04-me.pitch)*Math.min(1,dt*1.2);}
   // guided auto tour: look around at each stop, fade to the next; any user input hands control back
   const AUTO_TOBE=[
@@ -742,7 +742,7 @@ document.getElementById('refDel').addEventListener('click',()=>{const k=curShot;
 let joined=false;
 document.getElementById('wJoin').addEventListener('submit',e=>{e.preventDefault();const v=document.getElementById('wJoinName').value.trim();if(!v)return;WALK.setName(v);joined=true;document.getElementById('wJoin').hidden=true;});
 document.getElementById('wJoinName').addEventListener('keydown',e=>e.stopPropagation());
-function setTab(name){curTab=name;tAutoBtn.hidden=name!=='tour';if(name!=='tour'&&TA.on)tAuto(false);const cmpOn=name==='compare',walkOn=name==='walk';document.getElementById('compareView').hidden=!cmpOn;document.getElementById('walkView').hidden=!walkOn;
+function setTab(name){curTab=name;tAutoBtn.hidden=true;if(name!=='tour'&&TA.on)tAuto(false);const cmpOn=name==='compare',walkOn=name==='walk';document.getElementById('compareView').hidden=!cmpOn;document.getElementById('walkView').hidden=!walkOn;
   ['tour','walk','compare'].forEach(k=>document.getElementById('tab-'+k).setAttribute('aria-selected',String(k===name)));
   if(walkOn){WALK.start('tobe');if(!joined){const jn=document.getElementById('wJoinName');jn.value=WALK.getName();document.getElementById('wJoin').hidden=false;setTimeout(()=>{try{jn.focus();}catch(e){}},50);}}else WALK.stop();
   try{history.replaceState(null,'','#'+name);}catch(e){}}
