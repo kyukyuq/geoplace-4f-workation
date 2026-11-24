@@ -130,15 +130,6 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 .tabs button{border:0;background:transparent;color:#ece9e3;font:600 13.5px/1 var(--font-body);padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}
 .tabs button[aria-selected="true"]{background:#ece9e3;color:#14171a}
 .tabs button:focus-visible{outline:2px solid #7db6d8;outline-offset:2px}
-.autobtn{position:fixed;right:max(14px,env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));z-index:11;border:0;cursor:pointer;font:600 13px/1 var(--font-body);padding:10px 14px;border-radius:999px;background:rgba(20,23,26,.78);color:#ece9e3;box-shadow:0 2px 10px rgba(0,0,0,.3)}
-.autobtn[aria-pressed="true"]{background:#e08a5e;color:#fff}
-.autobtn:focus-visible{outline:2px solid #7db6d8;outline-offset:2px}
-.autocap{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:9;pointer-events:none;max-width:min(560px,88vw);text-align:center;background:rgba(20,23,26,.78);color:#fff;border-radius:12px;padding:10px 16px;font:500 14px/1.45 var(--font-body);transition:opacity .4s}
-.autocap b{display:block;font-size:16px;color:#ffd7b5;margin-bottom:2px}
-.lockhint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;pointer-events:none;background:rgba(20,23,26,.72);color:#fff;font:600 14px/1 var(--font-body);padding:12px 18px;border-radius:999px}
-@media (pointer:coarse){.mlook,.lockhint{display:none!important}}
-.wfade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .45s;z-index:4}.wfade.on{opacity:1}
-@media (max-width:640px){.autobtn{top:calc(58px + env(safe-area-inset-top,0px))}.autocap{top:calc(104px + env(safe-area-inset-top,0px));font-size:13px}}
 @media (max-width:640px){.card{top:calc(64px + env(safe-area-inset-top,0px))}.tabs button{padding:9px 11px;font-size:12.5px}.wview{--mapw:38vw}}
 .cview .wrap{max-width:1160px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:36px}
 .cview .eyebrow{font-size:12px;letter-spacing:.08em;color:var(--c-muted);font-weight:600}
@@ -188,7 +179,6 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 <div class="fade" id="fade"></div>
 <div class="loading" id="loading">파노라마 불러오는 중…</div>
 <div class="hots" id="hots"></div>
-<button class="autobtn" id="tAuto" type="button" aria-pressed="false" hidden>▶ 자동 둘러보기</button>
 <div class="card" id="tourCard">
   <div class="head"><div><div class="eyebrow">부산 서면 · 지오플레이스 4층 · 블렌더 360°</div><h1>지오플레이스 4F 360° 투어</h1></div><button class="fold" type="button" aria-expanded="true" aria-controls="tourCard">접기</button></div>
   <div class="seg" id="modeSeg"><button id="m-asis" data-v="asis" aria-pressed="false">현재 식당가</button><button id="m-tobe" data-v="tobe" aria-pressed="true">워케이션</button></div>
@@ -201,9 +191,6 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 <div class="hint">드래그 둘러보기 · 휠 확대 · ← → 회전</div>
 <div class="wview" id="walkView" role="tabpanel" aria-labelledby="tab-walk" hidden>
   <canvas id="w" aria-label="1인칭으로 걸어 다니는 4층 3D 공간"></canvas>
-  <div class="wfade" id="wFade"></div>
-  <button class="autobtn" id="wAuto" type="button" aria-pressed="false" hidden>▶ 자동 투어</button>
-  <div class="autocap" id="wAutoCap" hidden></div>
   <div class="wstatus" id="wStatus" hidden>3D 공간을 짓는 중…</div>
   <form class="wjoin" id="wJoin" autocomplete="off">
     <div class="jcard">
@@ -220,19 +207,16 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
     <div class="seg" id="wModeSeg"><button data-v="asis" aria-pressed="false">현재 식당가</button><button data-v="tobe" aria-pressed="true">워케이션</button></div>
     <div class="lbl">순간 이동</div>
     <div class="seg grid" id="wPtSeg"></div>
-    <div class="lbl mlook">시점</div>
-    <div class="seg mlook" id="wLookSeg"><button data-v="auto" aria-pressed="true">마우스 시점</button><button data-v="manual" aria-pressed="false">드래그로 돌리기</button></div>
     <div id="wTogether" hidden><div class="lbl">함께 걷기</div><p class="foot" id="wNet" style="margin:6px 0 8px">연결하는 중…</p>
       <div class="trow"><input id="wName" placeholder="내 이름" maxlength="16" aria-label="다른 사람에게 보일 내 이름"><input id="wSayIn" placeholder="말풍선으로 한마디" maxlength="60" aria-label="말풍선 메시지"><button id="wSayBtn" class="fold" type="button">말하기</button></div></div>
-    <p class="foot">PC: 화면을 한 번 클릭하면 마우스만 움직여도 고개가 돌아가요. ESC를 누르면 마우스가 풀려요. W A S D 또는 방향키로 걸어요. Shift를 누르면 빨리 걷고, Space로 점프해요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
+    <p class="foot">PC: W A S D 또는 방향키로 걷고, 드래그로 고개를 돌려요. Shift를 누르면 빨리 걷고, Space로 점프해요.<br>모바일: 왼쪽 아래 조이스틱으로 걷고, 옆의 달리기 버튼을 꾹 누르고 있으면 빨리 가요. 화면을 드래그해 둘러봐요. 벽과 가구는 통과하지 않아요.</p>
   </div>
   <div class="wchat" id="wChat" hidden><div class="log" id="wChatLog" aria-live="polite"></div><form id="wChatForm" autocomplete="off"><input id="wChatIn" placeholder="채팅 입력 후 Enter" maxlength="60" aria-label="채팅 메시지"><button type="submit">보내기</button></form></div>
   <div class="joy" id="wJoy" aria-label="이동 조이스틱"><i></i></div>
   <button class="runbtn wavebtn" id="wWave" type="button" aria-pressed="false" aria-label="손 흔들기" title="손 흔들기">👋</button>
   <div class="wavefx" id="wWaveFx" aria-hidden="true" hidden>👋</div>
   <button class="runbtn" id="wRun" type="button" aria-pressed="false" aria-label="누르고 있는 동안 빨리 걷기">달리기</button>
-  <div class="wkeys" id="wKeys">W A S D 걷기 · 마우스로 둘러보기 · Shift 달리기 · Space 점프 · ESC 마우스 해제</div>
-  <div class="lockhint" id="wLockHint" hidden>화면을 클릭하면 마우스로 둘러볼 수 있어요</div>
+  <div class="wkeys">W A S D 걷기 · 드래그 둘러보기 · Shift 달리기 · Space 점프</div>
   <div class="wmap"><img id="wMapImg" src="renders_cy/plan_tobe.jpg" alt="현재 위치 평면도"><b id="wDot"></b></div>
 </div>
 <div class="cview" id="compareView" role="tabpanel" aria-labelledby="tab-compare" hidden>
@@ -342,20 +326,13 @@ canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);
 canvas.addEventListener('pointermove',e=>{if(!drag||!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
   if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.dist==null){drag.dist=d;drag.fov=state.fov;}state.fov=THREE.MathUtils.clamp(drag.fov*drag.dist/d,30,100);return;}
   const k=state.fov/canvas.clientHeight*Math.PI/180;state.yaw=drag.yaw+(e.clientX-drag.x)*k;state.pitch=THREE.MathUtils.clamp(drag.pitch+(e.clientY-drag.y)*k,-1.45,1.45);});
-const TA={on:false,turned:0,last:0,busy:false};const tAutoBtn=document.getElementById('tAuto');
-function tAuto(v){TA.on=v;TA.turned=0;TA.last=0;tAutoBtn.setAttribute('aria-pressed',String(v));tAutoBtn.textContent=v?'❚❚ 자동 멈춤':'▶ 자동 둘러보기';}
-tAutoBtn.addEventListener('click',()=>tAuto(!TA.on));
-canvas.addEventListener('pointerdown',()=>{if(TA.on)tAuto(false);});canvas.addEventListener('wheel',()=>{if(TA.on)tAuto(false);},{passive:true});
-function tAutoTick(now){if(!TA.on||TA.busy){TA.last=now;return;}const dt=TA.last?Math.min(.5,(now-TA.last)/1000):0;TA.last=now;const d=.2*dt;state.yaw+=d;TA.turned+=d;
-  state.pitch+=(-.05-state.pitch)*Math.min(1,dt*2);
-  if(TA.turned>=Math.PI*2){const ks=Object.keys(PTS);const nx=ks[(ks.indexOf(state.pt)+1)%ks.length];TA.turned=0;TA.busy=true;show(nx,state.mode,false).finally(()=>{TA.busy=false;TA.last=0;});}}
 const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;};canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
 canvas.addEventListener('wheel',e=>{e.preventDefault();state.fov=THREE.MathUtils.clamp(state.fov*(1+e.deltaY*.001),30,100);},{passive:false});
-addEventListener('keydown',e=>{if(curTab==='tour'&&TA.on&&e.key.startsWith('Arrow'))tAuto(false);if(e.key==='ArrowLeft')state.yaw+=.08;if(e.key==='ArrowRight')state.yaw-=.08;if(e.key==='ArrowUp')state.pitch=Math.min(1.45,state.pitch+.06);if(e.key==='ArrowDown')state.pitch=Math.max(-1.45,state.pitch-.06);});
+addEventListener('keydown',e=>{if(e.key==='ArrowLeft')state.yaw+=.08;if(e.key==='ArrowRight')state.yaw-=.08;if(e.key==='ArrowUp')state.pitch=Math.min(1.45,state.pitch+.06);if(e.key==='ArrowDown')state.pitch=Math.max(-1.45,state.pitch-.06);});
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
 addEventListener('resize',resize);resize();
 const v=new THREE.Vector3();
-(function loop(now){requestAnimationFrame(loop);if(curTab!=='tour')return;tAutoTick(now||performance.now());camera.rotation.y=state.yaw;camera.rotation.x=state.pitch;if(camera.fov!==state.fov){camera.fov=state.fov;camera.updateProjectionMatrix();}
+(function loop(){requestAnimationFrame(loop);if(curTab!=='tour')return;camera.rotation.y=state.yaw;camera.rotation.x=state.pitch;if(camera.fov!==state.fov){camera.fov=state.fov;camera.updateProjectionMatrix();}
   renderer.render(scene,camera);
   const cur=PTS[state.pt];Object.entries(PTS).forEach(([k,p])=>{const el=hotEls[k];if(k===state.pt){el.style.display='none';return;}
     const dx=p.pos[0]-cur.pos[0],dz=p.pos[1]-cur.pos[1],L=Math.hypot(dx,dz);v.set(dx/L,-.16-Math.min(.25,4/L),dz/L).normalize();v.project(camera);
@@ -619,15 +596,7 @@ function build(prims,group){const buckets={};
     waveTimer=setTimeout(()=>{fx.hidden=true;b.setAttribute('aria-pressed','false');},1900);}
   function bindInput(){const cv=document.getElementById('w');let drag=null;
     document.getElementById('wWave').addEventListener('click',wave);addEventListener('keydown',e=>{if(running&&e.code==='KeyH'&&!e.repeat&&!/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||''))wave();});
-    cv.addEventListener('pointerdown',e=>{if(AU.on)setAuto(false);
-      if(e.pointerType==='mouse'&&mouseLook&&fine&&!lockFailed){if(!locked()){try{const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{});}catch(_){}}return;}
-      cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};});
-    document.addEventListener('mousemove',e=>{if(!running)return;let k=.0022;
-      if(!locked()){if(!(lockFailed&&mouseLook&&fine&&e.target===cv&&!e.buttons))return;k=.004;}   // fallback: hover-look when the browser refuses pointer lock
-      me.yaw-=e.movementX*k;me.pitch=Math.max(-1.2,Math.min(1.2,me.pitch-e.movementY*k));});
-    document.addEventListener('pointerlockchange',lockHint);document.addEventListener('pointerlockerror',()=>{lockFailed=true;lockHint();});
-    autoBtn().addEventListener('click',()=>setAuto(!AU.on));
-    document.querySelectorAll('#wLookSeg button').forEach(b=>b.addEventListener('click',()=>setLook(b.dataset.v==="auto")));setLook(mouseLook);
+    cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY};});
     cv.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const k=.0042;me.yaw+=(e.clientX-drag.x)*k;me.pitch=Math.max(-1.2,Math.min(1.2,me.pitch+(e.clientY-drag.y)*k));drag.x=e.clientX;drag.y=e.clientY;});
     const end=e=>{if(drag&&drag.id===e.pointerId)drag=null;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
     addEventListener('keydown',e=>{if(!running)return;if(/INPUT|TEXTAREA/.test((e.target&&e.target.tagName)||''))return;keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault();
@@ -641,55 +610,19 @@ function build(prims,group){const buckets={};
     document.querySelectorAll('#wModeSeg button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.v)));}
   function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
   let jumpY=0,jumpV=0;
-  // 자동 시점: when walking sideways/diagonally the view eases toward the walking direction; pitch drifts back to level
-  let autoLook=false;let mouseLook=true;let lockFailed=false;try{mouseLook=localStorage.getItem('gp4f-mlook')!=='manual';}catch(e){}
-  const fine=matchMedia('(pointer:fine)').matches;
-  const locked=()=>document.pointerLockElement===renderer?.domElement;
-  function lockHint(){const h=document.getElementById('wLockHint');if(h)h.hidden=!(running&&fine&&mouseLook&&!lockFailed&&!locked()&&document.getElementById('wJoin').hidden);}
-  function setLook(v){mouseLook=v;document.querySelectorAll('#wLookSeg button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.v==='auto')===v)));
-    try{localStorage.setItem('gp4f-mlook',v?'auto':'manual');}catch(e){}if(!v&&locked())document.exitPointerLock();lockHint();}
-  function lookTick(f,s,dt){if(!autoLook)return;const len=Math.hypot(f,s);if(len<.15)return;
-    if(f<-.2&&Math.abs(s)<.35)return;                                   // walking straight back: don't spin around
-    let a=Math.atan2(-s,Math.max(f,0));                                   // + = turn left, - = turn right
-    a=Math.max(-1.2,Math.min(1.2,a));me.yaw+=a*2.0*dt*Math.min(1,len);
-    me.pitch+=(-.04-me.pitch)*Math.min(1,dt*1.2);}
-  // guided auto tour: look around at each stop, fade to the next; any user input hands control back
-  const AUTO_TOBE=[
-    {n:'부산 맛 · 술 스탬프 투어',d:'매대, 탭룸, 테이스팅 랩, 쿠킹 클래스, 워크 & 테이스트 다섯 곳을 도는 동선이에요.',p:[11,12.5],t:[12.5,7.5]},
-    {n:'Local Food Market',d:'어묵, 돼지국밥, 밀면, 씨앗호떡을 열린 주방에서 바로 만들어요.',p:[1.5,20.4],t:[-12,16.2]},
-    {n:'BUSAN LOCAL TAP',d:'갈매기브루잉, 고릴라브루잉, 와일드웨이브, 대선, 생탁, 금정산성까지 셀프 탭으로 따라 마셔요.',p:[-35.5,18.6],t:[-31.5,14.2]},
-    {n:'테이스팅 랩',d:'소주, 막걸리, 크래프트 맥주 4종 비교 세트와 금요일 저녁 막걸리 빚기 클래스.',p:[-40.5,23.5],t:[-46.5,19.5]},
-    {n:'스탠딩 바 테이블',d:'3.6m 긴 테이블에서 서서 한 잔. 탭룸과 테이스팅 랩 사이예요.',p:[-33,29.2],t:[-30.5,20]},
-    {n:'로컬 쿠킹 스튜디오',d:'어묵 만들기, 씨앗호떡 굽기, 밀면 반죽. 만든 음식은 다이닝 홀에서 먹어요.',p:[30.5,18.6],t:[22.5,25.5]},
-    {n:'부산 식재료 마켓',d:'영도 어묵, 밀면 키트, 생탁 막걸리를 사 가는 로컬 상점.',p:[38.5,24],t:[38.5,16]},
-    {n:'워크 & 테이스트',d:'낮엔 노트북 바, 18시부터 퇴근 한 잔. 오늘의 페어링 보드가 있어요.',p:[10,-21],t:[7,-31]},
-    {n:'코워킹',d:'8인 벤치 데스크 다섯 묶음과 서가 벽.',p:[-8,-21],t:[-34,-27.5]},
-    {n:'워케이션 허브',d:'일일권과 멤버십 데스크, 1인 화상회의 부스, 짐 보관 락커.',p:[34,-19],t:[44,-29]}];
-  const AU={on:false,i:0,t:0,lt:0,phase:'look',base:0};
-  const autoBtn=()=>document.getElementById('wAuto'),autoCap=()=>document.getElementById('wAutoCap'),wFade=()=>document.getElementById('wFade');
-  function autoStops(){return mode==='tobe'?AUTO_TOBE:Object.values(PTS).map(p=>({n:p.name,d:p.asis,p:p.pos,t:p.tgt}));}
-  function autoGo(i){const st=autoStops();AU.i=(i+st.length)%st.length;const s=st[AU.i];
-    me.x=s.p[0];me.z=s.p[1];AU.base=Math.atan2(-(s.t[0]-s.p[0]),-(s.t[1]-s.p[1]));me.yaw=AU.base-.5;me.pitch=-.06;AU.t=0;AU.lt=0;AU.phase='look';
-    const c=autoCap();c.hidden=false;c.innerHTML='';const b=document.createElement('b');b.textContent=s.n;c.appendChild(b);c.appendChild(document.createTextNode(s.d||''));}
-  function setAuto(v){AU.on=v;const b=autoBtn();if(b){b.setAttribute('aria-pressed',String(v));b.textContent=v?'❚❚ 자동 멈춤':'▶ 자동 투어';}
-    const c=autoCap();if(c)c.hidden=!v;if(!v){wFade()?.classList.remove('on');spawn(me.x,me.z,me.yaw);}if(v)autoGo(AU.i);}
-  function autoTick(){if(!AU.on)return;const nw=performance.now(),dt=AU.lt?Math.min(1,(nw-AU.lt)/1000):0;AU.lt=nw;AU.t+=dt;
-    if(AU.phase==='look'){const k=Math.min(1,AU.t/8);me.yaw=AU.base-.5+1.0*(.5-.5*Math.cos(k*Math.PI));if(AU.t>=8.6){AU.phase='out';AU.t=0;wFade().classList.add('on');}}
-    else if(AU.phase==='out'&&AU.t>=.5){autoGo(AU.i+1);AU.phase='in';AU.t=0;wFade().classList.remove('on');}
-    else if(AU.phase==='in'){me.yaw=AU.base-.5;if(AU.t>=.45){AU.phase='look';AU.t=0;}}}
   function step(now){if(!running)return;requestAnimationFrame(step);const dt=Math.min(.05,(now-(last||now))/1000);last=now;if(!L)return;
     let f=0,s=0;if(keys.KeyW||keys.ArrowUp)f+=1;if(keys.KeyS||keys.ArrowDown)f-=1;if(keys.KeyA||keys.ArrowLeft)s-=1;if(keys.KeyD||keys.ArrowRight)s+=1;if(keys.KeyQ)me.yaw+=1.6*dt;if(keys.KeyE)me.yaw-=1.6*dt;
-    f-=joy.y;s+=joy.x;if(AU.on&&(f||s||keys.KeyQ||keys.KeyE))setAuto(false);autoTick(dt);const len=Math.hypot(f,s);if(len>1){f/=len;s/=len;}
+    f-=joy.y;s+=joy.x;const len=Math.hypot(f,s);if(len>1){f/=len;s/=len;}
     const sp=(keys.ShiftLeft||keys.ShiftRight||runHeld?4.2:2.1)*dt;const fx=-Math.sin(me.yaw),fz=-Math.cos(me.yaw),rx=Math.cos(me.yaw),rz=-Math.sin(me.yaw);
     const dx=(fx*f+rx*s)*sp,dz=(fz*f+rz*s)*sp;if(free(me.x+dx,me.z))me.x+=dx;if(free(me.x,me.z+dz))me.z+=dz;
     if(jumpV!==0||jumpY>0){jumpV-=13*dt;jumpY+=jumpV*dt;if(jumpY<=0){jumpY=0;jumpV=0;}}
     const bob=len>.05&&jumpY===0?Math.sin(now*.011)*.025:0;camera.position.set(me.x,EYE+bob+jumpY,me.z);camera.rotation.set(me.pitch,me.yaw,0);
     if(mode==='tobe')animatePeople(now/1000,dt);
     animateAvatars(dt);sendPresence(false);
-    poolT-=dt;if(poolT<=0){updatePool();poolT=.4;lockHint();}
+    poolT-=dt;if(poolT<=0){updatePool();poolT=.4;}
     renderer.render(scene,camera);
     const dot=document.getElementById('wDot');if(dot){dot.style.left=((me.x+52)/104*100)+'%';dot.style.top=((me.z+34.667)/69.333*100)+'%';dot.style.transform='translate(-50%,-50%) rotate('+(-me.yaw)+'rad)';}}
-  return{setName:(n)=>{myName=clean(n,16);try{localStorage.setItem('gp4f-name',myName);}catch(e){}const nm=document.getElementById('wName');if(nm)nm.value=myName;sendPresence(true);},getName:()=>myName,start:async(m)=>{if(m)mode=m;await init();running=true;last=0;if(groups.asis)setMode(mode);requestAnimationFrame(step);},stop:()=>{running=false;for(const k in keys)keys[k]=false;if(AU.on)setAuto(false);if(locked())document.exitPointerLock();lockHint();}};
+  return{setName:(n)=>{myName=clean(n,16);try{localStorage.setItem('gp4f-name',myName);}catch(e){}const nm=document.getElementById('wName');if(nm)nm.value=myName;sendPresence(true);},getName:()=>myName,start:async(m)=>{if(m)mode=m;await init();running=true;last=0;if(groups.asis)setMode(mode);requestAnimationFrame(step);},stop:()=>{running=false;for(const k in keys)keys[k]=false;}};
 })();
 
 
@@ -755,7 +688,7 @@ document.getElementById('refDel').addEventListener('click',()=>{const k=curShot;
 let joined=false;
 document.getElementById('wJoin').addEventListener('submit',e=>{e.preventDefault();const v=document.getElementById('wJoinName').value.trim();if(!v)return;WALK.setName(v);joined=true;document.getElementById('wJoin').hidden=true;});
 document.getElementById('wJoinName').addEventListener('keydown',e=>e.stopPropagation());
-function setTab(name){curTab=name;tAutoBtn.hidden=true;if(name!=='tour'&&TA.on)tAuto(false);const cmpOn=name==='compare',walkOn=name==='walk';document.getElementById('compareView').hidden=!cmpOn;document.getElementById('walkView').hidden=!walkOn;
+function setTab(name){curTab=name;const cmpOn=name==='compare',walkOn=name==='walk';document.getElementById('compareView').hidden=!cmpOn;document.getElementById('walkView').hidden=!walkOn;
   ['tour','walk','compare'].forEach(k=>document.getElementById('tab-'+k).setAttribute('aria-selected',String(k===name)));
   if(walkOn){WALK.start('tobe');if(!joined){const jn=document.getElementById('wJoinName');jn.value=WALK.getName();document.getElementById('wJoin').hidden=false;setTimeout(()=>{try{jn.focus();}catch(e){}},50);}}else WALK.stop();
   try{history.replaceState(null,'','#'+name);}catch(e){}}
