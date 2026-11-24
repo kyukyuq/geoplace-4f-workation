@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script><script src="room-shim.js"></script></head><body><title>지오플레이스 4F 투어</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script><script src="room-shim.js"></script></head><body><title>지오플레이스 4F 실사 투어</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -177,7 +177,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
   <p class="desc" id="desc"></p>
   <p class="foot">드래그로 둘러보고, 휠이나 두 손가락으로 확대해요. 흰 표시를 누르면 그 지점으로 이동해요. 같은 지점에서 <b>현재</b>와 <b>워케이션</b>을 바꿔 볼 수 있어요. <a href="https://claude.ai/artifact/DJL1CiFMzknrkgU1NyHza3">자유롭게 걸어 다니는 HTML 3D</a></p>
 </div>
-<div class="map" id="map"><img id="mapImg" src="renders_big/plan_tobe.jpg" alt="4층 평면도"></div>
+<div class="map" id="map"><img id="mapImg" src="renders_cy/plan_tobe.jpg" alt="4층 평면도"></div>
 <div class="hint">드래그 둘러보기 · 휠 확대 · ← → 회전</div>
 <div class="wview" id="walkView" role="tabpanel" aria-labelledby="tab-walk" hidden>
   <canvas id="w" aria-label="1인칭으로 걸어 다니는 4층 3D 공간"></canvas>
@@ -206,7 +206,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
   <div class="wavefx" id="wWaveFx" aria-hidden="true" hidden>👋</div>
   <button class="runbtn" id="wRun" type="button" aria-pressed="false" aria-label="누르고 있는 동안 빨리 걷기">달리기</button>
   <div class="wkeys">W A S D 걷기 · 드래그 둘러보기 · Shift 달리기</div>
-  <div class="wmap"><img id="wMapImg" src="renders_big/plan_tobe.jpg" alt="현재 위치 평면도"><b id="wDot"></b></div>
+  <div class="wmap"><img id="wMapImg" src="renders_cy/plan_tobe.jpg" alt="현재 위치 평면도"><b id="wDot"></b></div>
 </div>
 <div class="cview" id="compareView" role="tabpanel" aria-labelledby="tab-compare" hidden>
 <div class="wrap">
@@ -220,8 +220,8 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
     <h2 id="h-cmp" hidden>현재와 워케이션 비교</h2>
     <div class="srcseg"><span>왼쪽 '현재' 이미지</span><div class="rseg" role="group" aria-label="현재 이미지 종류"><button id="src-model" type="button" aria-pressed="true">현재 모델링</button><button id="src-ref" type="button" aria-pressed="false">레퍼런스 사진</button></div></div>
     <div class="cmp" id="cmp" style="--x:50%">
-      <img id="imgA" src="renders_big/atrium_asis.jpg" alt="현재 4층 식당가">
-      <img id="imgB" class="after" src="renders_big/atrium_tobe.jpg" alt="워케이션으로 바꾼 4층">
+      <img id="imgA" src="renders_cy/atrium_asis.jpg" alt="현재 4층 식당가">
+      <img id="imgB" class="after" src="renders_cy/atrium_tobe.jpg" alt="워케이션으로 바꾼 4층">
       <span class="lab l" id="labL">현재 식당가 · 모델링</span><span class="lab r">워케이션</span>
       <input type="range" id="slider" min="0" max="100" value="50" aria-label="현재와 워케이션 비교 위치">
       <div class="handle"></div>
@@ -267,7 +267,11 @@ const PTS={
  hall:{name:'옛 푸드코트 홀',pos:[44,25.5],tgt:[-20,21],asis:'남쪽 창가를 따라 길게 뻗은 텅 빈 푸드코트 홀. 검은 천을 덮은 매대만 남았어요.',tobe:'창가 벤치와 로컬 카페에서 시작해 지역 상인 맛집, 탭룸까지 이어지는 남쪽 홀.'},
  stalls:{name:'철거된 주방 줄',pos:[-14,27],tgt:[-30,15],asis:'아직 불이 켜진 매대 두 곳 옆으로 철거하다 만 주방 칸이 이어져요. 남은 푸드코트 테이블이 모여 있어요.',tobe:'벽돌 바닥의 Local Taproom. 거리 쪽으로 튼 사선 메인 바, 24탭 탭월, 로우 부스, 창가 양조 탱크.'},
  west:{name:'서쪽 복도',pos:[-37,12],tgt:[-37,-22],asis:'영업 중인 식당 두 곳의 간판만 밝은 서쪽 복도.',tobe:'우드 슬랫 천장 아래 20인 공용 식탁이 있는 Dining Hall 옆 서쪽 복도.'},
- island:{name:'동쪽 섬 앞 복도',pos:[13,10],tgt:[13,-30],asis:'아트리움과 동쪽 섬 블록 사이 복도. 빈 점포 유리 너머가 어두워요.',tobe:'색으로 구분한 유리 회의실과 통화 부스가 있는 Meeting 블록과 Talk Plaza 사이 복도.'}
+ island:{name:'동쪽 섬 앞 복도',pos:[13,10],tgt:[13,-30],asis:'아트리움과 동쪽 섬 블록 사이 복도. 빈 점포 유리 너머가 어두워요.',tobe:'색으로 구분한 유리 회의실과 통화 부스가 있는 Meeting 블록과 Talk Plaza 사이 복도.'},
+ market:{name:'남쪽 매대 앞',pos:[1.5,20.4],tgt:[-12,16.2],asis:'검은 천을 덮은 매대가 줄지어 선 남쪽 매대 줄. 불 꺼진 칸이 대부분이에요.',tobe:'Local Food Market. 어묵, 돼지국밥, 밀면, 씨앗호떡 매대가 열린 주방에서 바로 만들어 내요. 간판과 메뉴판, 조리복 입은 상인들.'},
+ taproom:{name:'남서쪽 코너',pos:[-33,29.2],tgt:[-30.5,20],asis:'창가 쪽 남서쪽 코너. 철거하다 만 주방 칸과 남은 테이블만 있어요.',tobe:'Local Taproom. 생맥주 탭 타워가 있는 사선 메인 바와 벽돌 탭월, 케그, 창가 양조 탱크.'},
+ cowork:{name:'북서쪽 점포 줄',pos:[-8,-21],tgt:[-34,-27.5],asis:'셔터가 줄지어 내려진 북쪽 점포 줄의 서쪽 끝.',tobe:'Co-working. 노트북을 펴고 일하는 벤치 데스크와 서가 벽, 플랜터 칸막이.'},
+ cafe:{name:'동쪽 매대 줄',pos:[30,20],tgt:[21,16.5],asis:'셔터 내린 동쪽 매대 줄. 창가 쪽이 휑하게 비어 있어요.',tobe:'Cafe & Retail. 바리스타가 있는 로컬 로스터리 카운터와 부산 브랜드 진열대.'},
 };
 const FACES={px:[[1,0,0],[0,1,0]],nx:[[-1,0,0],[0,1,0]],py:[[0,1,0],[0,0,1]],ny:[[0,-1,0],[0,0,-1]],pz:[[0,0,1],[0,1,0]],nz:[[0,0,-1],[0,1,0]]};
 const canvas=document.getElementById('c');
@@ -279,7 +283,7 @@ Object.entries(FACES).forEach(([k,[d,u]])=>{const D=new THREE.Vector3(...d),U=ne
   m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(R,U,D.clone().negate()));m.position.copy(D);scene.add(m);planes[k]=m;});
 const cache={};
 function loadSet(pt,mode){const key=pt+'_'+mode;if(cache[key])return cache[key];
-  cache[key]=Promise.all(Object.keys(FACES).map(f=>new Promise((res,rej)=>loader.load('renders_big/pano/'+key+'_'+f+'.jpg',t=>{t.encoding=THREE.sRGBEncoding;t.anisotropy=8;res([f,t]);},undefined,rej))));
+  cache[key]=Promise.all(Object.keys(FACES).map(f=>new Promise((res,rej)=>loader.load('renders_cy/pano/'+key+'_'+f+'.jpg',t=>{t.encoding=THREE.sRGBEncoding;t.anisotropy=8;res([f,t]);},undefined,rej))));
   return cache[key];}
 const state={pt:'atrium',mode:'tobe',yaw:0,pitch:-.05,fov:80};
 const fade=document.getElementById('fade'),loading=document.getElementById('loading');
@@ -302,7 +306,7 @@ const map=document.getElementById('map'),mapImg=document.getElementById('mapImg'
 Object.entries(PTS).forEach(([k,p])=>{const d=document.createElement('button');d.className='dot';d.type='button';d.title=p.name;d.setAttribute('aria-label',p.name);
   d.style.left=((p.pos[0]+52)/104*100)+'%';d.style.top=((p.pos[1]+34.667)/69.333*100)+'%';d.addEventListener('click',()=>show(k,state.mode,false));map.appendChild(d);dots[k]=d;});
 function ui(){setPressed('modeSeg',state.mode);setPressed('ptSeg',state.pt);const p=PTS[state.pt];
-  document.getElementById('desc').innerHTML='<b>'+p.name+'</b> · '+p[state.mode];mapImg.src='renders_big/plan_'+state.mode+'.jpg';
+  document.getElementById('desc').innerHTML='<b>'+p.name+'</b> · '+p[state.mode];mapImg.src='renders_cy/plan_'+state.mode+'.jpg';
   Object.entries(dots).forEach(([k,d])=>d.classList.toggle('on',k===state.pt));
   cone.style.left=dots[state.pt].style.left;cone.style.top=dots[state.pt].style.top;}
 // controls
@@ -560,15 +564,15 @@ function build(prims,group){const buckets={};
     resize();addEventListener('resize',resize);bindInput();buildHud();joinRoom();}
   function setMode(m){mode=m;if(!groups.asis)return;groups.asis.visible=m==='asis';groups.tobe.visible=m==='tobe';const asis=m==='asis';
     scene.background=new THREE.Color(asis?'#05070a':'#1d1a17');scene.fog=new THREE.Fog(asis?'#05070a':'#2a241e',asis?6:16,asis?46:95);
-    hemi.color.set(asis?0xcfdcff:0xffd2a0);hemi.groundColor.set(asis?0x111316:0x2a2420);hemi.intensity=asis?.35:.2;renderer.toneMappingExposure=asis?1.1:.85;scene.environment=asis?null:envTex;Object.values(matCache).forEach(mm=>{if(mm.userData.env0===undefined)mm.userData.env0=mm.envMapIntensity;mm.envMapIntensity=mm.userData.env0*(asis?1:.14);});if(glows.asis){glows.asis.visible=asis;glows.tobe.visible=!asis;}
+    hemi.color.set(asis?0xcfdcff:0xffd2a0);hemi.groundColor.set(asis?0x111316:0x2a2420);hemi.intensity=asis?.08:.2;renderer.toneMappingExposure=asis?.48:.85;scene.environment=asis?null:envTex;Object.values(matCache).forEach(mm=>{if(mm.userData.env0===undefined)mm.userData.env0=mm.envMapIntensity;mm.envMapIntensity=mm.userData.env0*(asis?1:.14);});if(glows.asis){glows.asis.visible=asis;glows.tobe.visible=!asis;}
     pool.forEach(l=>l.color.set(asis?0xdde6ff:0xffb36b));
     Object.values(emitMats).forEach(arr=>arr.forEach(mm=>mm.emissiveIntensity=asis?1.6:2.0));
     if(!free(me.x,me.z))spawn(me.x,me.z,me.yaw);poolT=0;
     document.querySelectorAll('#wModeSeg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===m)));
     for(const a of NET.peers.values())a.root.visible=false;sendPresence(true);
-    const mi=document.getElementById('wMapImg');if(mi)mi.src='renders_big/plan_'+m+'.jpg';}
+    const mi=document.getElementById('wMapImg');if(mi)mi.src='renders_cy/plan_'+m+'.jpg';}
   function updatePool(){const ls=lampsBy[mode]||[];const near=ls.map(l=>[l,(l[0]-me.x)**2+(l[2]-me.z)**2]).sort((a,b)=>a[1]-b[1]).slice(0,pool.length);
-    pool.forEach((l,i)=>{const n=near[i];if(!n){l.intensity=0;return;}l.position.set(n[0][0],n[0][1]-.3,n[0][2]);l.intensity=mode==='asis'?1.1:1.05;l.distance=mode==='asis'?9:10;});}
+    pool.forEach((l,i)=>{const n=near[i];if(!n){l.intensity=0;return;}l.position.set(n[0][0],n[0][1]-.3,n[0][2]);l.intensity=mode==='asis'?.7:1.05;l.distance=mode==='asis'?9:10;});}
   let waveTimer=0;function wave(){NET.waveT=Date.now();sendPresence(true);const b=document.getElementById('wWave'),fx=document.getElementById('wWaveFx');
     b.setAttribute('aria-pressed','true');fx.hidden=false;fx.style.animation='none';void fx.offsetWidth;fx.style.animation='';clearTimeout(waveTimer);
     waveTimer=setTimeout(()=>{fx.hidden=true;b.setAttribute('aria-pressed','false');},1900);}
@@ -609,6 +613,10 @@ const SHOTS=[
  {k:'stalls',t:'철거된 주방 줄',d:'철거 주방 칸과 남은 테이블 → 벽돌 바닥, 사선 메인 바, 24탭 탭월의 Local Taproom.'},
  {k:'west',t:'서쪽 복도',d:'영업 중인 식당 두 곳만 밝은 복도 → 20인 공용 식탁이 있는 Dining Hall 옆 복도.'},
  {k:'island',t:'동쪽 섬 앞 복도',d:'빈 점포 유리 너머가 어두운 복도 → 색으로 구분한 유리 회의실과 Talk Plaza 사이.'},
+ {k:'market',t:'남쪽 매대 앞',d:'검은 천 덮인 매대 줄 → 간판과 메뉴판, 열린 주방에서 상인이 요리하는 Local Food Market.'},
+ {k:'taproom',t:'남서쪽 코너',d:'철거하다 만 주방 칸 → 탭 타워와 벽돌 탭월, 케그가 있는 Local Taproom.'},
+ {k:'cowork',t:'북서쪽 점포 줄',d:'셔터 내린 점포 줄 → 노트북 들고 일하는 Co-working.'},
+ {k:'cafe',t:'동쪽 매대 줄',d:'셔터 내린 매대 줄 → 바리스타가 있는 로컬 카페와 부산 브랜드 진열대.'},
  {k:'overview',t:'전체 조감',d:'천장과 남쪽 유리벽을 걷어내고 위에서 본 96 × 64m 4층 전체.'},
  {k:'plan',t:'평면도 · 구역',d:'구역마다 바닥 마감을 달리했어요. 벽돌(탭룸), 원목(다이닝·카페·코워킹), 테라조(맛집), 밝은 스크리드(통로).',plan:true}
 ];
@@ -626,8 +634,8 @@ let curShot='atrium';const cmp=document.getElementById('cmp'),sl=document.getEle
 sl.addEventListener('input',()=>cmp.style.setProperty('--x',sl.value+'%'));
 const picker=document.getElementById('picker');
 SHOTS.forEach((s,i)=>{const b=document.createElement('button');b.className='pick';b.type='button';b.id='shot-'+s.k;b.setAttribute('aria-pressed',String(i===0));
-  b.innerHTML='<img src="renders_big/'+s.k+'_tobe.jpg" alt=""><span>'+s.t+'</span>';
-  b.addEventListener('click',()=>{curShot=s.k;renderLeft();A.dataset.k=s.k;B.src='renders_big/'+s.k+'_tobe.jpg';cmp.classList.toggle('plan',!!s.plan);curShot=s.k;document.getElementById('goPano').hidden=!!(s.k==='overview'||s.k==='plan');
+  b.innerHTML='<img src="renders_cy/'+s.k+'_tobe.jpg" alt=""><span>'+s.t+'</span>';
+  b.addEventListener('click',()=>{curShot=s.k;renderLeft();A.dataset.k=s.k;B.src='renders_cy/'+s.k+'_tobe.jpg';cmp.classList.toggle('plan',!!s.plan);curShot=s.k;document.getElementById('goPano').hidden=!!(s.k==='overview'||s.k==='plan');
     document.getElementById('capT').textContent=s.t;document.getElementById('capD').textContent=s.d;
     picker.querySelectorAll('.pick').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});picker.appendChild(b);});
 document.getElementById('zones').innerHTML=ZONES.map(z=>'<div class="z"><h3><i style="background:'+z[0]+'"></i>'+z[1]+'</h3><div class="ko">'+z[2]+'</div><p>'+z[3]+'</p><div class="src"><b>'+z[4]+'</b> → '+z[5]+'</div></div>').join('');
@@ -648,7 +656,7 @@ async function renderLeft(){const k=curShot,ref=REFS[k];const bar=document.getEl
   if(leftSrc==='ref'&&ref){const u=await getRef(k);if(curShot!==k)return;A.src=u||placeholder('레퍼런스 사진이 아직 없어요');lab.textContent='현재 식당가 · 레퍼런스 사진';
     bar.hidden=false;document.getElementById('refTxt').innerHTML='이 장면의 레퍼런스: <b>'+ref.label+'</b> (디시 도시미관 갤러리 게시글)';document.getElementById('refLink').href=ref.url;
     document.getElementById('refDel').hidden=!u;document.getElementById('refPick').textContent=u?'사진 바꾸기':'사진 넣기';}
-  else{A.src='renders_big/'+k+'_asis.jpg';lab.textContent='현재 식당가 · 모델링';bar.hidden=!(leftSrc==='ref'&&!ref)?true:false;
+  else{A.src='renders_cy/'+k+'_asis.jpg';lab.textContent='현재 식당가 · 모델링';bar.hidden=!(leftSrc==='ref'&&!ref)?true:false;
     if(leftSrc==='ref'&&!ref){bar.hidden=false;document.getElementById('refTxt').textContent='이 장면은 레퍼런스 사진이 없어서 모델링으로 보여 줘요.';document.getElementById('refLink').hidden=true;document.getElementById('refPick').hidden=true;document.getElementById('refDel').hidden=true;return;}}
   document.getElementById('refLink').hidden=false;document.getElementById('refPick').hidden=false;}
 const setSrc=v=>{leftSrc=v;document.getElementById('src-model').setAttribute('aria-pressed',String(v==='model'));document.getElementById('src-ref').setAttribute('aria-pressed',String(v==='ref'));renderLeft();};
