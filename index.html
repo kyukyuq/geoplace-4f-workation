@@ -181,7 +181,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 <div class="hots" id="hots"></div>
 <div class="card" id="tourCard">
   <div class="head"><div><div class="eyebrow">부산 서면 · 지오플레이스 4층 · 블렌더 360°</div><h1>지오플레이스 4F 360° 투어</h1></div><button class="fold" type="button" aria-expanded="true" aria-controls="tourCard">접기</button></div>
-  <div class="seg" id="modeSeg"><button id="m-asis" data-v="asis" aria-pressed="false">현재 식당가</button><button id="m-tobe" data-v="tobe" aria-pressed="true">워케이션</button></div>
+  <div class="seg" id="modeSeg"><button id="m-asis" data-v="asis" aria-pressed="false">현재 지오플레이스</button><button id="m-tobe" data-v="tobe" aria-pressed="true">워케이션</button></div>
   <div class="lbl">지점</div>
   <div class="seg grid" id="ptSeg"></div>
   <p class="desc" id="desc"></p>
@@ -204,7 +204,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
   </form>
   <div class="card" id="walkCard">
     <div class="head"><div><div class="eyebrow">실시간 3D · 1인칭</div><h1>4층 걸어 보기</h1></div><button class="fold" type="button" aria-expanded="true" aria-controls="walkCard">접기</button></div>
-    <div class="seg" id="wModeSeg"><button data-v="asis" aria-pressed="false">현재 식당가</button><button data-v="tobe" aria-pressed="true">워케이션</button></div>
+    <div class="seg" id="wModeSeg"><button data-v="asis" aria-pressed="false">현재 지오플레이스</button><button data-v="tobe" aria-pressed="true">워케이션</button></div>
     <div class="lbl">순간 이동</div>
     <div class="seg grid" id="wPtSeg"></div>
     <div id="wTogether" hidden><div class="lbl">함께 걷기</div><p class="foot" id="wNet" style="margin:6px 0 8px">연결하는 중…</p>
@@ -233,7 +233,7 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
     <div class="cmp" id="cmp" style="--x:50%">
       <img id="imgA" src="renders_cy/atrium_asis.jpg" alt="현재 4층 식당가">
       <img id="imgB" class="after" src="renders_cy/atrium_tobe.jpg" alt="워케이션으로 바꾼 4층">
-      <span class="lab l" id="labL">현재 식당가 · 모델링</span><span class="lab r">워케이션</span>
+      <span class="lab l" id="labL">현재 지오플레이스 · 모델링</span><span class="lab r">워케이션</span>
       <input type="range" id="slider" min="0" max="100" value="50" aria-label="현재와 워케이션 비교 위치">
       <div class="handle"></div>
     </div>
@@ -683,10 +683,10 @@ function placeholder(txt){const c=document.createElement('canvas');c.width=1600;
   g.fillStyle='#a3a29c';g.font='600 44px "IBM Plex Sans KR",sans-serif';g.textAlign='center';g.fillText(txt,400,430);g.font='500 30px "IBM Plex Sans KR",sans-serif';g.fillText('아래 “사진 넣기”로 넣어 주세요',400,490);return c.toDataURL('image/jpeg',.8);}
 async function renderLeft(){const k=curShot,ref=REFS[k];const bar=document.getElementById('refBar');const lab=document.getElementById('labL');
   document.getElementById('src-ref').disabled=!ref;
-  if(leftSrc==='ref'&&ref){const u=await getRef(k);if(curShot!==k)return;A.src=u||placeholder('레퍼런스 사진이 아직 없어요');lab.textContent='현재 식당가 · 레퍼런스 사진';
+  if(leftSrc==='ref'&&ref){const u=await getRef(k);if(curShot!==k)return;A.src=u||placeholder('레퍼런스 사진이 아직 없어요');lab.textContent='현재 지오플레이스 · 레퍼런스 사진';
     bar.hidden=false;document.getElementById('refTxt').innerHTML='이 장면의 레퍼런스: <b>'+ref.label+'</b> (디시 도시미관 갤러리 게시글)';document.getElementById('refLink').href=ref.url;
     document.getElementById('refDel').hidden=!u;document.getElementById('refPick').textContent=u?'사진 바꾸기':'사진 넣기';}
-  else{A.src='renders_cy/'+k+'_asis.jpg';lab.textContent='현재 식당가 · 모델링';bar.hidden=!(leftSrc==='ref'&&!ref)?true:false;
+  else{A.src='renders_cy/'+k+'_asis.jpg';lab.textContent='현재 지오플레이스 · 모델링';bar.hidden=!(leftSrc==='ref'&&!ref)?true:false;
     if(leftSrc==='ref'&&!ref){bar.hidden=false;document.getElementById('refTxt').textContent='이 장면은 레퍼런스 사진이 없어서 모델링으로 보여 줘요.';document.getElementById('refLink').hidden=true;document.getElementById('refPick').hidden=true;document.getElementById('refDel').hidden=true;return;}}
   document.getElementById('refLink').hidden=false;document.getElementById('refPick').hidden=false;}
 const setSrc=v=>{leftSrc=v;document.getElementById('src-model').setAttribute('aria-pressed',String(v==='model'));document.getElementById('src-ref').setAttribute('aria-pressed',String(v==='ref'));renderLeft();};
