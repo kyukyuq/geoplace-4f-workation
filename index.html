@@ -273,21 +273,22 @@ h1{font-family:var(--font-display);font-size:22px;line-height:1.2;margin:2px 0 0
 (function(){
 let curTab='tour';
 const PTS={
- atrium:{name:'아트리움',pos:[-14,-4],tgt:[8,6],asis:'멈춘 에스컬레이터 두 쌍이 있는 가운데 아트리움. 난간 너머로 3층이 어둡게 내려다보여요.',tobe:'Talk Plaza. 아트리움을 둘러싼 계단식 좌석, 대형 스크린, 소파 라운지와 매달린 화분이 있는 대화 광장이에요.'},
+ atrium:{name:'Talk Plaza',pos:[-14,-4],tgt:[8,6],asis:'멈춘 에스컬레이터 두 쌍이 있는 가운데 아트리움. 난간 너머로 3층이 어둡게 내려다보여요.',tobe:'Talk Plaza. 아트리움을 둘러싼 계단식 좌석, 대형 스크린, 소파 라운지와 매달린 화분이 있는 대화 광장이에요.'},
  north:{name:'북쪽 복도',pos:[36,-21],tgt:[-30,-21],asis:'셔터와 합판이 끝없이 이어지는 66m짜리 복도. 다운라이트가 드문드문 켜져 있어요.',tobe:'북쪽 점포 줄을 터서 만든 Co-working과 워케이션 허브가 이어지는 밝은 복도.'},
  hall:{name:'옛 푸드코트 홀',pos:[44,25.5],tgt:[-20,21],asis:'남쪽 창가를 따라 길게 뻗은 텅 빈 푸드코트 홀. 검은 천을 덮은 매대만 남았어요.',tobe:'창가 벤치와 로컬 카페에서 시작해 지역 상인 맛집, 탭룸까지 이어지는 남쪽 홀.'},
  stalls:{name:'철거된 주방 줄',pos:[-14,27],tgt:[-30,15],asis:'아직 불이 켜진 매대 두 곳 옆으로 철거하다 만 주방 칸이 이어져요. 남은 푸드코트 테이블이 모여 있어요.',tobe:'벽돌 바닥의 Local Taproom. 거리 쪽으로 튼 사선 메인 바, 부산 술 셀프 탭 벽, 서쪽 벽 테이스팅 랩, 창가 양조 탱크.'},
  west:{name:'서쪽 복도',pos:[-37,12],tgt:[-37,-22],asis:'영업 중인 식당 두 곳의 간판만 밝은 서쪽 복도.',tobe:'우드 슬랫 천장 아래 20인 공용 식탁이 있는 Dining Hall 옆 서쪽 복도.'},
  island:{name:'동쪽 섬 앞 복도',pos:[13,10],tgt:[13,-30],asis:'아트리움과 동쪽 섬 블록 사이 복도. 빈 점포 유리 너머가 어두워요.',tobe:'색으로 구분한 유리 회의실과 통화 부스가 있는 Meeting 블록과 Talk Plaza 사이 복도. 아트리움 쪽에 부산 맛 · 술 스탬프 투어 보드가 있어요.'},
- market:{name:'남쪽 매대 앞',pos:[1.5,20.4],tgt:[-12,16.2],asis:'검은 천을 덮은 매대가 줄지어 선 남쪽 매대 줄. 불 꺼진 칸이 대부분이에요.',tobe:'Local Food Market. 어묵, 돼지국밥, 밀면, 씨앗호떡 매대가 열린 주방에서 바로 만들어 내요. 간판과 메뉴판, 조리복 입은 상인들.'},
- taproom:{name:'남서쪽 코너',pos:[-33,29.2],tgt:[-30.5,20],asis:'창가 쪽 남서쪽 코너. 철거하다 만 주방 칸과 남은 테이블만 있어요.',tobe:'Local Taproom. 3.6m 스탠딩 바 테이블, 사선 메인 바, 부산 술 브랜드 셀프 탭 벽, 창가 양조 탱크.'},
- cowork:{name:'북서쪽 점포 줄',pos:[-8,-21],tgt:[-34,-27.5],asis:'셔터가 줄지어 내려진 북쪽 점포 줄의 서쪽 끝.',tobe:'Co-working. 노트북을 펴고 일하는 벤치 데스크와 서가 벽, 플랜터 칸막이.'},
+ market:{name:'로컬 마켓 존',pos:[1.5,20.4],tgt:[-12,16.2],asis:'검은 천을 덮은 매대가 줄지어 선 남쪽 매대 줄. 불 꺼진 칸이 대부분이에요.',tobe:'Local Food Market. 어묵, 돼지국밥, 밀면, 씨앗호떡 매대가 열린 주방에서 바로 만들어 내요. 간판과 메뉴판, 조리복 입은 상인들. 다이닝 카운터 옆 부산 술 냉장고에서 국밥엔 소주, 밀면엔 막걸리를 곁들여요.'},
+ taproom:{name:'부산 크래프트 탭',pos:[-33,29.2],tgt:[-30.5,20],asis:'창가 쪽 남서쪽 코너. 철거하다 만 주방 칸과 남은 테이블만 있어요.',tobe:'Local Taproom. 3.6m 스탠딩 바 테이블, 사선 메인 바, 부산 술 브랜드 셀프 탭 벽, 창가 양조 탱크.'},
+ cowork:{name:'코워킹 존',pos:[-8,-21],tgt:[-34,-27.5],asis:'셔터가 줄지어 내려진 북쪽 점포 줄의 서쪽 끝.',tobe:'Co-working. 노트북을 펴고 일하는 벤치 데스크와 서가 벽, 플랜터 칸막이.'},
  tasting:{name:'탭룸 서쪽 벽',pos:[-40.5,23.5],tgt:[-46.5,19.5],asis:'칸막이벽만 남은 텅 빈 서쪽 끝 공간. 바닥 타일과 천장 조명 몇 개뿐이에요.',tobe:'Tasting Lab. 소주, 막걸리, 크래프트 맥주 4종 비교 세트와 부산 술병 선반, 막걸리 빚는 과정 패널, 금요일 저녁 막걸리 빚기 클래스.'},
- cooking:{name:'카페 서쪽 끝',pos:[30.5,18.6],tgt:[22.5,25.5],asis:'창가를 따라 휑하게 빈 동쪽 홀. 오래된 카운터와 소파 하나만 남았어요.',tobe:'Local Cooking Studio. 거울 달린 강사 조리대와 학생 조리대, 계단식 관람석. 어묵 만들기, 씨앗호떡 굽기, 밀면 반죽을 직접 해 봐요.'},
+ cooking:{name:'체험존 · 쿠킹 스튜디오',pos:[30.5,18.6],tgt:[22.5,25.5],asis:'창가를 따라 휑하게 빈 동쪽 홀. 오래된 카운터와 소파 하나만 남았어요.',tobe:'Local Cooking Studio. 거울 달린 강사 조리대와 학생 조리대, 계단식 관람석. 어묵 만들기, 씨앗호떡 굽기, 밀면 반죽을 직접 해 봐요.'},
  worktaste:{name:'북쪽 점포 줄 동쪽 끝',pos:[10,-21],tgt:[7,-31],asis:'셔터가 내려진 북쪽 점포 줄의 동쪽 끝. 셔터 너머로 빈 매대가 보여요.',tobe:'Work & Taste. 낮엔 노트북 바, 18시부터 퇴근 한 잔. 오늘의 페어링 보드, 커피 머신과 생맥주 탭.'},
- bottleshop:{name:'서쪽 벽 식당 자리',pos:[-38.9,4.2],tgt:[-47.5,4.6],asis:'서쪽 벽을 따라 영업 중인 식당 두 곳. 카운터와 테이블 몇 개가 있는 좁은 식당 안이에요.',tobe:'Busan Bottle Shop. 부산 소주, 생탁·금정산성 막걸리, 전통주, 크래프트 맥주 냉장고와 선물 세트 테이블. 계산대에서 선물 포장과 택배 발송까지 해 줘요.'},
+ bottleshop:{name:'부산 술 바틀샵',pos:[-38.9,4.2],tgt:[-47.5,4.6],asis:'서쪽 벽을 따라 영업 중인 식당 두 곳. 카운터와 테이블 몇 개가 있는 좁은 식당 안이에요.',tobe:'Busan Bottle Shop. 부산 소주, 생탁·금정산성 막걸리, 전통주, 크래프트 맥주 냉장고와 선물 세트 테이블. 계산대에서 선물 포장과 택배 발송까지 해 줘요.'},
  cafe:{name:'동쪽 매대 줄',pos:[30,20],tgt:[21,16.5],asis:'셔터 내린 동쪽 매대 줄. 창가 쪽이 휑하게 비어 있어요.',tobe:'Cafe & Retail. 바리스타가 있는 로컬 로스터리 카운터, 로컬 쿠킹 스튜디오, 부산 식재료 마켓.'},
 };
+const TOUR=['cowork','atrium','taproom','market','cooking','bottleshop'];const TPTS=Object.fromEntries(TOUR.map(k=>[k,PTS[k]]));
 const FACES={px:[[1,0,0],[0,1,0]],nx:[[-1,0,0],[0,1,0]],py:[[0,1,0],[0,0,1]],ny:[[0,-1,0],[0,0,-1]],pz:[[0,0,1],[0,1,0]],nz:[[0,0,-1],[0,1,0]]};
 const canvas=document.getElementById('c');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;
@@ -308,17 +309,17 @@ async function show(pt,mode,keepView){const first=!cache[pt+'_'+mode];
   catch(e){delete cache[pt+'_'+mode];loading.hidden=false;loading.textContent='파노라마 이미지를 불러오지 못했어요. 다시 눌러 보세요.';}
   if(!keepView){const p=PTS[pt];state.yaw=Math.atan2(-(p.tgt[0]-p.pos[0]),-(p.tgt[1]-p.pos[1]));state.pitch=-.05;}
   state.pt=pt;state.mode=mode;ui();fade.classList.remove('on');
-  const pre=(p,m)=>loadSet(p,m).catch(()=>{delete cache[p+'_'+m];});Object.keys(PTS).forEach(k=>{if(k!==pt)pre(k,mode);});pre(pt,mode==='asis'?'tobe':'asis');}
+  const pre=(p,m)=>loadSet(p,m).catch(()=>{delete cache[p+'_'+m];});Object.keys(TPTS).forEach(k=>{if(k!==pt)pre(k,mode);});pre(pt,mode==='asis'?'tobe':'asis');}
 function setPressed(id,v){document.querySelectorAll('#'+id+' button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===v)));}
 const ptSeg=document.getElementById('ptSeg');
-Object.entries(PTS).forEach(([k,p])=>{const b=document.createElement('button');b.dataset.v=k;b.id='pt-'+k;b.textContent=p.name;b.addEventListener('click',()=>show(k,state.mode,false));ptSeg.appendChild(b);});
+Object.entries(TPTS).forEach(([k,p])=>{const b=document.createElement('button');b.dataset.v=k;b.id='pt-'+k;b.textContent=p.name;b.addEventListener('click',()=>show(k,state.mode,false));ptSeg.appendChild(b);});
 document.querySelectorAll('#modeSeg button').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.v!==state.mode)show(state.pt,b.dataset.v,true);}));
 // hotspots
 const hots=document.getElementById('hots');const hotEls={};
-Object.entries(PTS).forEach(([k,p])=>{const b=document.createElement('button');b.className='hot';b.type='button';b.innerHTML='<i>↗</i>'+p.name;b.addEventListener('click',()=>show(k,state.mode,false));hots.appendChild(b);hotEls[k]=b;});
+Object.entries(TPTS).forEach(([k,p])=>{const b=document.createElement('button');b.className='hot';b.type='button';b.innerHTML='<i>↗</i>'+p.name;b.addEventListener('click',()=>show(k,state.mode,false));hots.appendChild(b);hotEls[k]=b;});
 // minimap (plan camera: ortho 104m wide, 1920x1280, centred on origin)
 const map=document.getElementById('map'),mapImg=document.getElementById('mapImg');const dots={};const cone=document.createElement('div');cone.className='cone';map.appendChild(cone);
-Object.entries(PTS).forEach(([k,p])=>{const d=document.createElement('button');d.className='dot';d.type='button';d.title=p.name;d.setAttribute('aria-label',p.name);
+Object.entries(TPTS).forEach(([k,p])=>{const d=document.createElement('button');d.className='dot';d.type='button';d.title=p.name;d.setAttribute('aria-label',p.name);
   d.style.left=((p.pos[0]+52)/104*100)+'%';d.style.top=((p.pos[1]+34.667)/69.333*100)+'%';d.addEventListener('click',()=>show(k,state.mode,false));map.appendChild(d);dots[k]=d;});
 function ui(){setPressed('modeSeg',state.mode);setPressed('ptSeg',state.pt);const p=PTS[state.pt];
   document.getElementById('desc').innerHTML='<b>'+p.name+'</b> · '+p[state.mode];mapImg.src='renders_cy/plan_'+state.mode+'.jpg';
@@ -338,7 +339,7 @@ addEventListener('resize',resize);resize();
 const v=new THREE.Vector3();
 (function loop(){requestAnimationFrame(loop);if(curTab!=='tour')return;camera.rotation.y=state.yaw;camera.rotation.x=state.pitch;if(camera.fov!==state.fov){camera.fov=state.fov;camera.updateProjectionMatrix();}
   renderer.render(scene,camera);
-  const cur=PTS[state.pt];Object.entries(PTS).forEach(([k,p])=>{const el=hotEls[k];if(k===state.pt){el.style.display='none';return;}
+  const cur=PTS[state.pt];Object.entries(TPTS).forEach(([k,p])=>{const el=hotEls[k];if(k===state.pt){el.style.display='none';return;}
     const dx=p.pos[0]-cur.pos[0],dz=p.pos[1]-cur.pos[1],L=Math.hypot(dx,dz);v.set(dx/L,-.16-Math.min(.25,4/L),dz/L).normalize();v.project(camera);
     const vis=v.z<1&&Math.abs(v.x)<1.1&&Math.abs(v.y)<1.1;el.style.display=vis?'flex':'none';if(vis){el.style.left=((v.x+1)/2*innerWidth)+'px';el.style.top=((1-v.y)/2*innerHeight)+'px';}});
   cone.style.transform='rotate('+(-state.yaw)+'rad)';})();
@@ -609,7 +610,7 @@ function build(prims,group){const buckets={};
     pad.addEventListener('pointerdown',e=>{pad.setPointerCapture(e.pointerId);jid=e.pointerId;const r=pad.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;move(e);});
     const move=e=>{if(e.pointerId!==jid)return;let dx=e.clientX-cx,dy=e.clientY-cy;const d=Math.hypot(dx,dy),m=46;if(d>m){dx*=m/d;dy*=m/d;}joy.x=dx/m;joy.y=dy/m;knob.style.transform='translate('+dx+'px,'+dy+'px)';};
     pad.addEventListener('pointermove',move);const run=document.getElementById('wRun');const runOn=v=>{runHeld=v;run.setAttribute('aria-pressed',String(v));};run.addEventListener('pointerdown',e=>{e.preventDefault();runOn(true);try{run.setPointerCapture(e.pointerId);}catch(_){}});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>run.addEventListener(ev,()=>runOn(false)));run.addEventListener('contextmenu',e=>e.preventDefault());const jend=e=>{if(e.pointerId!==jid)return;jid=null;joy.x=joy.y=0;knob.style.transform='';};pad.addEventListener('pointerup',jend);pad.addEventListener('pointercancel',jend);}
-  function buildHud(){const seg=document.getElementById('wPtSeg');[['cowork','코워킹 존'],['atrium','Talk Plaza'],['taproom','부산 크래프트 탭'],['market','로컬 마켓 존'],['cooking','체험존 · 쿠킹 스튜디오'],['bottleshop','부산 술 바틀샵']].map(([k,n])=>[k,PTS[k],n]).forEach(([k,p,n])=>{const b=document.createElement('button');b.type='button';b.id='w-pt-'+k;b.textContent=n;
+  function buildHud(){const seg=document.getElementById('wPtSeg');TOUR.map(k=>[k,PTS[k],PTS[k].name]).forEach(([k,p,n])=>{const b=document.createElement('button');b.type='button';b.id='w-pt-'+k;b.textContent=n;
       b.addEventListener('click',()=>spawn(p.pos[0],p.pos[1],Math.atan2(-(p.tgt[0]-p.pos[0]),-(p.tgt[1]-p.pos[1]))));seg.appendChild(b);});
     document.querySelectorAll('#wModeSeg button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.v)));}
   function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
@@ -632,20 +633,20 @@ function build(prims,group){const buckets={};
 
 
 const SHOTS=[
- {k:'atrium',t:'아트리움',d:'멈춘 에스컬레이터 두 쌍이 있는 아트리움 → 계단식 좌석, 대형 스크린, 소파 라운지의 Talk Plaza.'},
+ {k:'cowork',t:'코워킹 존',d:'셔터 내린 점포 줄 → 노트북 들고 일하는 Co-working.'},
+ {k:'atrium',t:'Talk Plaza',d:'멈춘 에스컬레이터 두 쌍이 있는 아트리움 → 계단식 좌석, 대형 스크린, 소파 라운지의 Talk Plaza.'},
+ {k:'taproom',t:'부산 크래프트 탭',d:'철거하다 만 주방 칸 → 부산 술 셀프 탭 벽, 넓은 스탠딩 테이블, 테이스팅 랩이 있는 Local Taproom.'},
+ {k:'market',t:'로컬 마켓 존',d:'검은 천 덮인 매대 줄 → 열린 주방에서 상인이 요리하고, 부산 술 냉장고에서 소주 · 막걸리를 꺼내 곁들이는 Local Food Market.'},
+ {k:'cooking',t:'체험존 · 쿠킹 스튜디오',d:'휑하게 빈 동쪽 홀 → 어묵 만들기, 씨앗호떡 굽기를 직접 해 보는 Local Cooking Studio.'},
+ {k:'bottleshop',t:'부산 술 바틀샵',d:'영업 중인 식당 두 곳 → 부산 소주 · 막걸리 · 전통주 · 크래프트 맥주를 사 가는 기념품 바틀샵.'},
  {k:'north',t:'북쪽 복도',d:'셔터와 합판이 66m 이어지는 복도 → Co-working과 워케이션 허브가 이어지는 밝은 복도.'},
  {k:'hall',t:'남쪽 창가 홀',d:'텅 빈 푸드코트 홀 → 창가 벤치와 로컬 카페, 지역 상인 맛집, 탭룸으로 이어지는 홀.'},
  {k:'stalls',t:'철거된 주방 줄',d:'철거 주방 칸과 남은 테이블 → 벽돌 바닥, 사선 메인 바, 24탭 탭월의 Local Taproom.'},
  {k:'west',t:'서쪽 복도',d:'영업 중인 식당 두 곳만 밝은 복도 → 20인 공용 식탁이 있는 Dining Hall 옆 복도.'},
  {k:'island',t:'동쪽 섬 앞 복도',d:'빈 점포 유리 너머가 어두운 복도 → 색으로 구분한 유리 회의실과 Talk Plaza 사이.'},
- {k:'market',t:'남쪽 매대 앞',d:'검은 천 덮인 매대 줄 → 간판과 메뉴판, 열린 주방에서 상인이 요리하는 Local Food Market.'},
- {k:'taproom',t:'남서쪽 코너',d:'철거하다 만 주방 칸 → 부산 술 셀프 탭 벽, 넓은 스탠딩 테이블, 테이스팅 랩이 있는 Local Taproom.'},
- {k:'cowork',t:'북서쪽 점포 줄',d:'셔터 내린 점포 줄 → 노트북 들고 일하는 Co-working.'},
  {k:'cafe',t:'동쪽 매대 줄',d:'셔터 내린 매대 줄 → 바리스타가 있는 로컬 카페, 쿠킹 스튜디오, 부산 식재료 마켓.'},
  {k:'tasting',t:'탭룸 서쪽 벽',d:'텅 빈 서쪽 끝 공간 → 부산 술 4종 비교와 막걸리 빚기 클래스가 있는 Tasting Lab.'},
- {k:'cooking',t:'카페 서쪽 끝',d:'휑하게 빈 동쪽 홀 → 어묵 만들기, 씨앗호떡 굽기를 직접 해 보는 Local Cooking Studio.'},
  {k:'worktaste',t:'북쪽 점포 줄 동쪽 끝',d:'셔터 내린 점포 끝 → 낮엔 노트북 바, 18시부터 퇴근 한 잔인 Work & Taste.'},
- {k:'bottleshop',t:'서쪽 벽 식당 자리',d:'영업 중인 식당 두 곳 → 부산 소주 · 막걸리 · 전통주 · 크래프트 맥주를 사 가는 기념품 바틀샵.'},
  {k:'overview',t:'전체 조감',d:'천장과 남쪽 유리벽을 걷어내고 위에서 본 96 × 64m 4층 전체.'},
  {k:'plan',t:'평면도 · 구역',d:'구역마다 바닥 마감을 달리했어요. 벽돌(탭룸), 원목(다이닝·카페·코워킹), 테라조(맛집), 밝은 스크리드(통로).',plan:true}
 ];
